@@ -1,6 +1,156 @@
 ---
-title: create skill
-description: Próximamente.
+title: Crear un skill
+description: Cómo crear skills para tus agentes — con el creador de IA o editando el YAML manualmente.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Los skills son instrucciones, comportamientos o tools que podés asignar a un agente para extender lo que sabe hacer. Se crean desde **Settings → Skills**.
+
+Hay dos formas de crear un skill: con el creador de IA, o escribiendo el YAML manualmente.
+
+---
+
+## Opción A — Crear con IA
+
+La forma más rápida. Describís lo que querés y el agente redacta el skill por vos.
+
+1. Andá a **Settings → Skills**
+2. Hacé clic en **Nuevo skill**
+3. Elegí **Crear con IA**
+4. Describí el skill en lenguaje natural:
+
+```
+Quiero un skill que le diga al agente cómo responder consultas de soporte técnico.
+Debe ser formal, pedir siempre el número de ticket, y no prometer tiempos de resolución.
+```
+
+5. El agente genera el skill completo — revisalo y guardalo
+6. Asignalo a un agente desde el panel del agente en **Settings → Agentes**
+
+---
+
+## Opción B — Crear manualmente (YAML)
+
+Para más control sobre el contenido y los campos.
+
+1. Andá a **Settings → Skills**
+2. Hacé clic en **Nuevo skill**
+3. Elegí **Editor YAML**
+4. Completá el frontmatter y el contenido
+
+### Estructura de un skill
+
+```yaml
+---
+name: soporte-tecnico
+description: Instrucciones para responder consultas de soporte técnico
+type: skill
+---
+
+Cuando respondas consultas de soporte técnico:
+
+- Siempre pedí el número de ticket antes de avanzar
+- Usá un tono formal y empático
+- No prometas tiempos de resolución — decí "lo estamos revisando"
+- Si no sabés la respuesta, escalá al equipo de nivel 2
+- Cerrá siempre con "¿Hay algo más en lo que pueda ayudarte?"
+```
+
+### Campos del frontmatter
+
+| Campo | Requerido | Descripción |
+|-------|-----------|-------------|
+| `name` | ✓ | Identificador único (sin espacios, usar guiones) |
+| `description` | ✓ | Descripción corta del skill |
+| `type` | ✓ | `skill`, `hook`, `prompt` o `tool` |
+| `tools` | — | Solo para `type: hook` — lista de tools habilitadas |
+
+### Tipos de skill
+
+| Tipo | Para qué sirve |
+|------|---------------|
+| `skill` | Instrucciones de comportamiento o conocimiento específico |
+| `hook` | Se ejecuta automáticamente ante un evento (ej: inicio de sesión) |
+| `prompt` | Plantilla de prompt reutilizable con variables |
+| `tool` | Define una herramienta custom que el agente puede invocar |
+
+---
+
+## Ejemplo — skill de tipo hook
+
+Un hook se ejecuta automáticamente cuando el agente inicia una conversación:
+
+```yaml
+---
+name: bienvenida-formal
+description: Saluda al usuario al inicio de cada sesión
+type: hook
+event: session_start
+---
+
+Al iniciar la conversación, presentate como el asistente de [Nombre de empresa].
+Preguntá en qué podés ayudar hoy.
+No uses emojis en el saludo inicial.
+```
+
+---
+
+## Ejemplo — skill de tipo prompt
+
+Una plantilla reutilizable con variables:
+
+```yaml
+---
+name: resumen-reunion
+description: Template para resumir reuniones
+type: prompt
+---
+
+Resumí la siguiente reunión en este formato:
+
+**Fecha:** {{fecha}}
+**Participantes:** {{participantes}}
+
+**Puntos tratados:**
+- 
+
+**Decisiones tomadas:**
+- 
+
+**Próximos pasos:**
+- 
+```
+
+---
+
+## Importar desde GitHub
+
+Si tenés skills en un repositorio público:
+
+1. **Settings → Skills → Importar**
+2. Pegá la URL del archivo raw de GitHub:
+   ```
+   https://raw.githubusercontent.com/usuario/repo/main/skills/soporte.yaml
+   ```
+3. Conduit AI importa el archivo y lo guarda como skill editable
+
+---
+
+## Asignar un skill a un agente
+
+Los skills no tienen efecto hasta que se asignan a un agente:
+
+1. Andá a **Settings → Agentes**
+2. Seleccioná el agente
+3. En la sección **Skills**, buscá y agregá el skill
+4. Guardá
+
+A partir de ese momento, el agente aplica las instrucciones del skill en cada conversación.
+
+---
+
+## Tips
+
+- Un agente puede tener múltiples skills — se combinan en el contexto
+- Skills más cortos y específicos funcionan mejor que uno largo con todo
+- Si dos skills tienen instrucciones contradictorias, el agente intenta reconciliarlas — mejor evitarlo
+- Podés desactivar un skill temporalmente sin borrarlo desde el panel del agente

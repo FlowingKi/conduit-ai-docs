@@ -1,6 +1,149 @@
 ---
-title: build automation
-description: Próximamente.
+title: Construir una automatización
+description: Flow completo de ejemplo — de webhook a acción en Slack, paso a paso.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Esta guía construye una automatización real de principio a fin: recibir un formulario de contacto vía webhook, que un agente redacte una respuesta personalizada, y enviarla por Slack al equipo.
+
+**Flow que vamos a construir:**
+
+```
+Webhook (formulario) → Condition (¿es urgente?) → Agent (redacta respuesta) → Tool (Slack)
+```
+
+---
+
+## Antes de empezar
+
+- Slack conectado en **Connections → Integraciones**
+- Bridge corriendo
+- Un workspace con al menos un agente configurado
+
+---
+
+## Paso 1 — Crear la automatización
+
+1. Abrí un workspace → pestaña **Canvas**
+2. Hacé clic en **Nueva automatización**
+3. Poné el nombre: `Formulario de contacto`
+
+El canvas abre con un nodo **Trigger** vacío.
+
+---
+
+## Paso 2 — Configurar el trigger
+
+1. Hacé clic en el nodo **Trigger**
+2. Tipo: **Webhook**
+3. Guardá — copiá la URL generada
+
+El payload del formulario va a llegar con esta estructura (ejemplo):
+```json
+{
+  "nombre": "María García",
+  "email": "maria@empresa.com",
+  "mensaje": "Necesito soporte urgente con la integración",
+  "urgente": true
+}
+```
+
+---
+
+## Paso 3 — Agregar un nodo Condition
+
+Queremos bifurcar el flow según si la consulta es urgente o no.
+
+1. Arrastrá un nodo **Condition** al canvas y conectalo al Trigger
+2. En el panel, configurá:
+   - **Campo**: `{{trigger._payload.urgente}}`
+   - **Operador**: `is_true`
+3. El nodo genera dos salidas: **Verdadero** y **Falso**
+
+---
+
+## Paso 4 — Agregar el nodo Agent (rama Verdadero)
+
+Para las consultas urgentes, un agente redacta la respuesta con contexto.
+
+1. Arrastrá un nodo **Agent** y conectalo a la salida **Verdadero** del Condition
+2. En el panel:
+   - **Agente**: elegí el agente que quieras usar
+   - **Prompt**:
+```
+Recibiste una consulta urgente de {{trigger._payload.nombre}} ({{trigger._payload.email}}).
+
+Su mensaje: {{trigger._payload.mensaje}}
+
+Redactá un mensaje interno para el equipo de Slack explicando la situación y sugiriendo próximos pasos. Sé conciso, máximo 3 párrafos.
+```
+
+---
+
+## Paso 5 — Agregar el nodo Tool (Slack)
+
+Enviamos el output del agente a un canal de Slack.
+
+1. Arrastrá un nodo **Tool** y conectalo al nodo Agent
+2. En el panel:
+   - **Tool slug**: `SLACK_SENDS_A_MESSAGE`
+   - **channel**: `#soporte`
+   - **text**: `{{outputs.AGENT_NODE_ID.output}}`
+
+Reemplazá `AGENT_NODE_ID` con el ID del nodo Agent (visible en el panel al seleccionarlo).
+
+---
+
+## Paso 6 — Rama Falso (consultas normales)
+
+Para las no urgentes, enviamos un mensaje simple sin pasar por el agente.
+
+1. Arrastrá otro nodo **Tool** y conectalo a la salida **Falso** del Condition
+2. **Tool slug**: `SLACK_SENDS_A_MESSAGE`
+3. **channel**: `#soporte`
+4. **text**:
+```
+Nueva consulta de {{trigger._payload.nombre}}: {{trigger._payload.mensaje}}
+```
+
+---
+
+## Paso 7 — Activar y probar
+
+1. Hacé clic en **Activar** en la barra superior del canvas
+2. Enviá un payload de prueba desde la terminal:
+
+```bash
+curl -X POST https://conduit-ai-prod.vercel.app/api/webhooks/TU_WEBHOOK_ID \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nombre": "María García",
+    "email": "maria@empresa.com",
+    "mensaje": "Necesito soporte urgente",
+    "urgente": true
+  }'
+```
+
+3. En el canvas, los nodos se iluminan en tiempo real mostrando el estado de ejecución
+4. Chequeá el canal `#soporte` en Slack — el mensaje debería haber llegado
+
+---
+
+## Resultado final
+
+```
+Webhook
+  └── Condition (urgente = true)
+        ├── [Verdadero] Agent → Tool (Slack con respuesta del agente)
+        └── [Falso]     Tool (Slack con mensaje directo)
+```
+
+---
+
+## Variaciones comunes
+
+| Caso de uso | Cambio en el flow |
+|-------------|------------------|
+| Enviar por Gmail en vez de Slack | Reemplazá el Tool por `GMAIL_SEND_EMAIL` |
+| Guardar en Notion | Agregá un nodo Tool con `NOTION_CREATE_NOTION_PAGE` después del Agent |
+| Loop sobre múltiples destinatarios | Agregá un nodo Loop antes del Tool |
+| Condición más compleja | Usá modo avanzado en el nodo Condition con AND/OR |
