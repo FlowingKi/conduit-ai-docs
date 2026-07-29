@@ -1,6 +1,80 @@
 ---
-title: skill format
-description: Próximamente.
+title: Formato de Skill (pendiente de revisión)
+description: Estructura YAML de un archivo de skill. Documentado como está hoy — hay casos pendientes de mejorar.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+<Warning>
+Esta página documenta el formato actual. El sistema de skills está marcado para revisión — puede cambiar en sprints futuros.
+</Warning>
+
+Un skill es un archivo Markdown con frontmatter YAML. El parser lee el bloque `---` al inicio del archivo y extrae los metadatos.
+
+## Estructura básica
+
+```markdown
+---
+name: nombre-del-skill
+type: skill
+description: Qué hace este skill en una línea
+tools: tool1, tool2
+---
+
+# Contenido del skill
+
+Acá va el cuerpo del skill en Markdown.
+```
+
+## Campos del frontmatter
+
+| Campo | Requerido | Valores posibles | Default |
+|-------|-----------|-----------------|---------|
+| `name` | ✅ Sí | cualquier string | — |
+| `type` | No | `skill`, `hook`, `prompt`, `tool` | `skill` |
+| `description` | No | string | `""` |
+| `tools` | No | lista separada por comas | `[]` |
+
+El único campo requerido es `name`. Si un archivo `.md` no tiene `name` en el frontmatter, el parser lo ignora al importar desde GitHub.
+
+## Tipos de skill
+
+| Tipo | Uso |
+|------|-----|
+| `skill` | Instrucciones generales o conocimiento para el agente |
+| `hook` | Se ejecuta ante un evento específico |
+| `prompt` | Prompt base o plantilla reutilizable |
+| `tool` | Define una herramienta externa que el agente puede invocar |
+
+<Note>
+Si el tipo no es uno de los cuatro válidos, el sistema lo guarda como `skill` por defecto.
+</Note>
+
+## Campo `tools`
+
+Lista de herramientas separadas por coma:
+
+```yaml
+tools: github, slack, notion
+```
+
+Actualmente es informativo — el sistema no valida que las tools existan ni las conecta automáticamente.
+
+## Importar desde GitHub
+
+Al importar un repo, el parser recorre todos los `.md` del repo (excepto carpetas ocultas como `.github`). Cada archivo con `name:` en el frontmatter se importa como un skill individual dentro del mismo paquete.
+
+## Ejemplo completo
+
+```markdown
+---
+name: code-reviewer
+type: skill
+description: Revisa código buscando bugs, seguridad y legibilidad
+tools: github
+---
+
+Sos un revisor de código senior. Cuando te muestren código:
+
+1. Buscá bugs reales, no solo estilo
+2. Identificá problemas de seguridad
+3. Respondé con severidad: CRÍTICO / ALTO / MEDIO / BAJO
+```
