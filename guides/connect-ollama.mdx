@@ -1,11 +1,7 @@
 ---
-title: Conectar Ollama (pendiente de revisión)
-description: Configurá Ollama para correr modelos de IA localmente. La UI de conexión está pendiente de mejoras.
+title: Conectar Ollama
+description: Configurá Ollama para correr modelos de IA localmente — sin API keys, sin costo por token.
 ---
-
-<Warning>
-La pantalla de conexión de Ollama actualmente muestra un campo genérico "API Key" que no aplica a Ollama. Ollama no usa API keys — usa una URL de servidor local. Esta inconsistencia está marcada para corrección en Sprint-19. Las instrucciones de abajo te guían por el proceso actual.
-</Warning>
 
 Ollama te permite correr modelos de IA (Llama, Mistral, Gemma, etc.) directamente en tu computadora, sin enviar datos a servidores externos. Es la opción más privada y no tiene costo por token.
 
@@ -30,23 +26,24 @@ ollama pull mistral         # 4GB — bueno para código
 
 Ollama corre en `http://localhost:11434` por defecto.
 
-## Paso 3 — Conectar en Conduit AI (proceso actual)
+## Paso 3 — Agregar el modelo en Conduit AI
 
 <Steps>
   <Step title="Abrí Connections → AI Models">
     Buscá **Ollama** y hacé clic en **Conectar**.
   </Step>
-  <Step title="En el campo 'API Key'">
-    Ignorá el label — ingresá la URL de tu servidor Ollama:
-    ```
-    http://localhost:11434
-    ```
-    Si Ollama corre en otro puerto o máquina, cambiá la URL según corresponda.
+  <Step title="Completá el formulario">
+    - **Model ID**: el nombre exacto del modelo que descargaste (ej: `llama3.2`, `gemma3`, `mistral`)
+    - **URL del servidor**: `http://localhost:11434` (el default de Ollama)
   </Step>
-  <Step title="Guardá">
-    Los modelos que tengas descargados deberían aparecer en el selector de modelos de los agentes.
+  <Step title="Hacé clic en Agregar modelo">
+    El modelo queda guardado. Repetí este paso para cada modelo que quieras usar.
   </Step>
 </Steps>
+
+<Note>
+Podés agregar múltiples modelos de Ollama — cada uno aparece como opción separada en el selector de modelos de los agentes.
+</Note>
 
 ## Requisitos
 
@@ -62,3 +59,7 @@ Ollama corre en `http://localhost:11434` por defecto.
 | `gemma3` | 5GB | 8GB | Calidad alta, instrucciones |
 | `mistral` | 4GB | 8GB | Código, análisis |
 | `llama3.1:70b` | 40GB | 64GB | Máxima calidad local |
+
+## Gestionar modelos
+
+Los modelos Ollama que agregaste están disponibles en **Settings → Local Models**. Desde ahí podés ver y eliminar los que ya no uses.
