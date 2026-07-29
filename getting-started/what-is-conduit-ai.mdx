@@ -1,0 +1,69 @@
+---
+title: ¿Qué es Conduit AI?
+description: Una plataforma para crear agentes de IA que trabajan en tu computadora.
+---
+
+Conduit AI es una plataforma donde podés crear **agentes de IA** que trabajan con vos directamente en tu computadora. Los agentes pueden leer y editar archivos, buscar información, conectarse con tus apps favoritas, y ejecutar tareas complejas — todo desde una interfaz simple en el navegador.
+
+## Cómo funciona
+
+Conduit AI tiene tres partes que trabajan juntas:
+
+<CardGroup cols={3}>
+  <Card title="Web App" icon="globe">
+    Donde configurás todo: agentes, workspaces, automatizaciones. Corre en tu navegador.
+  </Card>
+  <Card title="Bridge" icon="plug">
+    Un programa liviano que instalás en tu computadora. Conecta la web app con tu modelo de IA local o en la nube.
+  </Card>
+  <Card title="VS Code" icon="code">
+    Extensión opcional para usar tus agentes sin salir del editor.
+  </Card>
+</CardGroup>
+
+## Los bloques principales
+
+<AccordionGroup>
+  <Accordion title="Agentes" icon="robot">
+    Un agente es un asistente de IA configurado para una tarea específica. Le das un nombre, una personalidad y le asignás skills. Podés tener tantos como necesites — uno para código, otro para redacción, otro para investigación.
+  </Accordion>
+  <Accordion title="Workspaces" icon="layout-dashboard">
+    Un workspace es un espacio de trabajo donde uno o más agentes colaboran. Cada workspace tiene su propio historial de chat, archivos adjuntos y memoria.
+  </Accordion>
+  <Accordion title="Memory" icon="brain">
+    La memoria de la plataforma. Podés guardar hechos, notas y contexto que los agentes recuerdan entre sesiones. Se sincroniza con Obsidian si lo usás.
+  </Accordion>
+  <Accordion title="Skills" icon="puzzle">
+    Capacidades que le agregás a los agentes. Un skill puede ser un conjunto de instrucciones, un hook que se ejecuta en ciertos eventos, o una herramienta externa.
+  </Accordion>
+  <Accordion title="Automatizaciones" icon="workflow">
+    Flows que se ejecutan solos. Conectás un trigger (webhook, schedule, evento) con una cadena de nodos que procesan datos, llaman agentes o conectan servicios.
+  </Accordion>
+  <Accordion title="Connections" icon="link">
+    Integraciones con servicios externos: OpenAI, Google AI, GitHub, Slack, Notion, y más de 1000 servicios via Composio.
+  </Accordion>
+</AccordionGroup>
+
+## ¿Para quién es Conduit AI?
+
+- **Desarrolladores** que quieren automatizar workflows sin salir de su entorno
+- **Equipos** que necesitan agentes especializados para distintas tareas
+- **Cualquier persona** que quiera que la IA trabaje con sus propios archivos y apps, sin subir datos a la nube
+
+## Requisitos
+
+Antes de empezar, necesitás:
+
+- Una cuenta de Google (para autenticarte)
+- **Node.js** instalado ([nodejs.org](https://nodejs.org) → versión LTS)
+- Un modelo de IA — puede ser tu propia API key (OpenAI, Google AI, DeepSeek) o **Ollama** corriendo localmente
+
+<Note>
+Conduit AI no requiere una suscripción a Claude. Podés conectar cualquier modelo que tengas disponible en la sección **Connections → AI Models**.
+</Note>
+
+## Próximo paso
+
+<Card title="Instalar el bridge" icon="download" href="/getting-started/install-bridge">
+  El bridge es lo primero que hay que instalar. Tarda menos de 5 minutos.
+</Card>

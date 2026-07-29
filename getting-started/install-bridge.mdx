@@ -1,0 +1,81 @@
+---
+title: Instalar el bridge
+description: El bridge conecta Conduit AI con tu computadora. Se instala una sola vez.
+---
+
+El bridge es un programa liviano que corre en tu computadora en segundo plano. Sin él, los agentes no pueden ejecutar tareas locales ni conectarse a tus archivos.
+
+## Opción 1 — npm (recomendado)
+
+<Steps>
+  <Step title="Instalá el bridge">
+    Abrí una terminal y ejecutá:
+    ```bash
+    npm install -g @conduitai/bridge
+    ```
+    Espera a que termine. Puede tardar hasta un minuto.
+  </Step>
+  <Step title="Iniciá el bridge">
+    ```bash
+    conduit-bridge start
+    ```
+    Deberías ver:
+    ```
+    ⚡ Conduit AI Bridge v1.0.3
+       URL:   http://localhost:3284
+    ```
+  </Step>
+  <Step title="Dejá la terminal abierta">
+    El bridge tiene que seguir corriendo mientras usás Conduit AI. Podés minimizar la terminal.
+  </Step>
+</Steps>
+
+## Opción 2 — Ejecutable Windows (.exe)
+
+Si no tenés Node.js instalado, podés descargar el ejecutable directamente:
+
+1. Descargá `conduit-bridge-win-v1.0.6.exe` desde [GitHub Releases](https://github.com/FlowingKi/conduit-ai-bridge/releases)
+2. Ejecutalo haciendo doble clic
+3. Si Windows muestra una advertencia de seguridad, hacé clic en **Más información → Ejecutar de todas formas**
+
+## Verificar la conexión
+
+Una vez que el bridge esté corriendo:
+
+1. Entrá a Conduit AI en el navegador
+2. Abrí **Connections** en el menú izquierdo
+3. Hacé clic en la tab **Bridge**
+4. Deberías ver el status **Conectado** con un punto verde
+
+<Check>
+Si el status es verde, el bridge está funcionando correctamente. Podés continuar con la configuración.
+</Check>
+
+<Warning>
+Si el status dice **Offline**, verificá que la terminal con `conduit-bridge start` esté abierta y sin errores. Luego hacé clic en **Reintentar**.
+</Warning>
+
+## Comandos útiles
+
+| Comando | Qué hace |
+|---------|----------|
+| `conduit-bridge start` | Inicia el bridge |
+| `conduit-bridge stop` | Detiene el bridge |
+| `conduit-bridge status` | Muestra si está corriendo |
+| `conduit-bridge --version` | Muestra la versión instalada |
+
+## Actualizar el bridge
+
+Para actualizar a la última versión:
+
+```bash
+npm install -g @conduitai/bridge
+```
+
+El comando reinstala automáticamente la versión más nueva.
+
+## Próximo paso
+
+<Card title="Crear tu primer agente" icon="robot" href="/getting-started/first-agent">
+  Con el bridge conectado, estás listo para crear tu primer agente.
+</Card>

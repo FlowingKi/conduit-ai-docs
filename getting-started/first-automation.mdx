@@ -1,0 +1,94 @@
+---
+title: Tu primera automatización
+description: Creá un flow que se ejecuta solo, sin intervención manual.
+---
+
+Las automatizaciones son flows que se disparan solos ante un evento — un webhook entrante, un horario programado, o un evento de un servicio externo. Se construyen visualmente con un canvas de nodos.
+
+## Crear la automatización
+
+<Steps>
+  <Step title="Abrí Automatizaciones">
+    En el menú izquierdo, hacé clic en **Automatizaciones**.
+  </Step>
+  <Step title="Creá una nueva">
+    Hacé clic en **Nueva automatización** y poné un nombre.
+  </Step>
+  <Step title="Elegí cómo construirla">
+    Hay dos formas de armar el flow:
+
+    **AI Builder** — describí lo que querés en lenguaje natural y el AI Builder genera los nodos automáticamente:
+    ```
+    "Cuando recibo un webhook, pedile a un agente que resuma el contenido y guárdalo en Memory"
+    ```
+
+    **Constructor manual (Lineal o Canvas)** — armá el flow nodo a nodo:
+    - Vista **Lineal** — lista paso a paso, más simple
+    - Vista **Canvas** — arrastrable con React Flow, más visual
+  </Step>
+  <Step title="Configurá el trigger">
+    El primer nodo siempre es el **Trigger**. Elegí el tipo:
+
+    | Tipo | Cuándo se activa |
+    |------|-----------------|
+    | `webhook` | Cuando recibe una llamada HTTP |
+    | `schedule` | Según un cron (ej: todos los lunes a las 9am) |
+    | `manual` | Solo cuando vos lo ejecutás manualmente |
+    | `service_event` | Ante un evento de un servicio conectado (ej: nuevo issue en GitHub) |
+  </Step>
+  <Step title="Agregá nodos">
+    Después del trigger, conectás los nodos que procesan el flow. El más común para empezar es el nodo **Agente** — le pasás el contenido del trigger y el agente lo procesa.
+  </Step>
+  <Step title="Guardá y activá">
+    Hacé clic en **Guardar**. Cambiá el status a **Activo** para que el flow empiece a escuchar triggers.
+  </Step>
+</Steps>
+
+## Los 14 tipos de nodos
+
+<AccordionGroup>
+  <Accordion title="Triggers y control de flujo" icon="play">
+    - **trigger** — punto de entrada del flow
+    - **condition** — bifurcación V/F con 12 operadores
+    - **router** — bifurcación múltiple (más de 2 ramas)
+    - **loop** — itera sobre un array o mientras se cumpla una condición
+    - **filter** — descarta items que no cumplen criterios
+  </Accordion>
+  <Accordion title="Agentes y acciones" icon="robot">
+    - **agent** — ejecuta un agente con contexto personalizable
+    - **instruction** — instrucción de texto directa (sin agente)
+    - **tool** — ejecuta un tool de Composio directamente (sin LLM)
+    - **http_request** — llamada HTTP a cualquier endpoint
+    - **subflow** — ejecuta otra automatización anidada
+  </Accordion>
+  <Accordion title="Datos" icon="database">
+    - **set_variables** — define variables reutilizables en el flow
+    - **data_transformer** — transforma la estructura de los datos
+    - **output** — el resultado final del flow
+    - **note** — comentario visual en el canvas (no ejecuta)
+  </Accordion>
+</AccordionGroup>
+
+## Variables
+
+En cualquier campo de cualquier nodo podés usar variables con la sintaxis `{{...}}`:
+
+```
+{{trigger._payload}}          → payload completo del webhook
+{{trigger._payload.user}}     → campo específico
+{{outputs.1.result}}          → output del nodo 1
+{{variables.mi_variable}}     → variable definida con set_variables
+```
+
+El **VariablePicker** (botón `{{` en cada campo) muestra las variables disponibles en ese punto del flow.
+
+## Próximos pasos
+
+<CardGroup cols={2}>
+  <Card title="Configurar un webhook" icon="webhook" href="/guides/configure-webhook">
+    Configurá tu primer trigger de tipo webhook con una URL real.
+  </Card>
+  <Card title="Referencia de nodos" icon="book" href="/reference/canvas-nodes">
+    Descripción completa de los 14 nodos con todos sus campos.
+  </Card>
+</CardGroup>

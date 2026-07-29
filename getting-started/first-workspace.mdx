@@ -1,0 +1,69 @@
+---
+title: Crear tu primer workspace
+description: Un workspace es el espacio donde chateas con tus agentes y colaborás en proyectos.
+---
+
+Un workspace agrupa uno o más agentes bajo un tema o proyecto en común. Cada workspace tiene su propio historial de chat, archivos adjuntos y memoria compartida entre los agentes que lo integran.
+
+## Crear el workspace
+
+<Steps>
+  <Step title="Abrí Workspaces">
+    En el menú izquierdo, hacé clic en **Workspaces**.
+  </Step>
+  <Step title="Creá uno nuevo">
+    Hacé clic en **Nuevo workspace**.
+  </Step>
+  <Step title="Poné un nombre">
+    Elegí un nombre que refleje el tema o proyecto (ej: "Trabajo", "Mi código", "Investigación").
+  </Step>
+  <Step title="Agregá tu agente">
+    En la sección **Agentes**, seleccioná el agente que creaste en el paso anterior. Podés agregar más de uno si querés que colaboren.
+  </Step>
+  <Step title="Guardá y entrá">
+    Hacé clic en **Guardar**. El workspace aparece en tu lista. Hacé clic en él para entrar.
+  </Step>
+</Steps>
+
+## El chat
+
+Dentro del workspace, el chat es la interfaz principal. Podés:
+
+- **Escribir mensajes** — el agente responde usando el modelo de IA conectado
+- **Adjuntar archivos** — arrastrá un archivo o usá el botón 📎 para incluir contexto
+- **Cargar contexto** — el botón 📂 te permite cargar desde URLs, GitHub, tu vault de Obsidian, o el clipboard
+- **Guardar en memoria** — el botón 💾 guarda el contenido de una respuesta en la memoria del workspace o del agente
+
+## Multi-agente
+
+Si agregaste más de un agente al workspace, podés elegir a cuál le hablás:
+
+- **Broadcast** — el mensaje se envía a todos los agentes simultáneamente
+- **@nombre** — mencionás un agente específico para delegar una tarea a ese agente solamente
+
+<Tip>
+La delegación funciona recursivamente: un agente puede mencionar a otro en su respuesta para pasarle una subtarea.
+</Tip>
+
+## Reglas del workspace
+
+En la tab **Reglas** dentro del workspace podés definir instrucciones que aplican a todos los agentes de ese espacio. Por ejemplo:
+
+```
+Siempre respondé en español.
+No uses emojis.
+Cuando generes código, incluí siempre los tipos TypeScript.
+```
+
+Las reglas se inyectan automáticamente en cada conversación.
+
+## Próximo paso
+
+<CardGroup cols={2}>
+  <Card title="Crear tu primera automatización" icon="workflow" href="/getting-started/first-automation">
+    Automatizá tareas repetitivas con el canvas visual.
+  </Card>
+  <Card title="Conectar servicios" icon="link" href="/guides/connect-openai">
+    Conectá GitHub, Slack, Notion y más para darle más poder a tus agentes.
+  </Card>
+</CardGroup>

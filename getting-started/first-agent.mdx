@@ -1,0 +1,63 @@
+---
+title: Crear tu primer agente
+description: Un agente es un asistente de IA configurado para una tarea específica.
+---
+
+Antes de crear un agente, necesitás tener al menos un modelo de IA conectado. Si todavía no lo hiciste, configurá uno en **Connections → AI Models**.
+
+<Note>
+Si ya tenés una API key de OpenAI, Google AI o DeepSeek, podés conectarla en menos de un minuto. También podés usar Ollama si preferís correr el modelo localmente. Ver [guías de conexión](/guides/connect-openai).
+</Note>
+
+## Crear el agente
+
+<Steps>
+  <Step title="Abrí Agentes">
+    En el menú izquierdo, hacé clic en **Agentes**.
+  </Step>
+  <Step title="Creá un agente nuevo">
+    Hacé clic en **Nuevo agente** (botón arriba a la derecha).
+  </Step>
+  <Step title="Configurá lo básico">
+    - **Nombre** — cómo se va a llamar este agente (ej: "Asistente general", "Dev", "Redactor")
+    - **Modelo** — el modelo de IA que va a usar. Elegí uno de los que conectaste en el paso anterior.
+    - **Descripción** — opcional, pero ayuda a recordar para qué sirve este agente
+  </Step>
+  <Step title="System prompt (opcional)">
+    El system prompt define la personalidad y las instrucciones permanentes del agente. Por ejemplo:
+
+    ```
+    Sos un asistente de desarrollo experto en TypeScript y Next.js.
+    Respondé siempre con código funcional y explicaciones concisas.
+    ```
+
+    Podés dejarlo vacío para empezar y editarlo después.
+  </Step>
+  <Step title="Guardá">
+    Hacé clic en **Guardar**. El agente aparece en tu lista.
+  </Step>
+</Steps>
+
+## Personalidad y sliders
+
+Cada agente tiene sliders de personalidad que ajustan su comportamiento:
+
+| Slider | Qué controla |
+|--------|-------------|
+| **Creatividad** | Qué tan exploratorio es en las respuestas (temperature) |
+| **Precisión** | Qué tan literal sigue las instrucciones |
+| **Verbosidad** | Respuestas cortas vs. detalladas |
+
+Estos parámetros se pueden cambiar en cualquier momento desde el panel de edición del agente.
+
+## Skills
+
+Los skills son capacidades adicionales que le podés asignar al agente. Para empezar no necesitás ninguno — el agente ya puede responder preguntas, generar código y procesar texto.
+
+Cuando quieras expandir lo que puede hacer, explorá la sección **Skills**.
+
+## Próximo paso
+
+<Card title="Crear tu primer workspace" icon="layout-dashboard" href="/getting-started/first-workspace">
+  Con el agente creado, el siguiente paso es abrirle un workspace para chatear.
+</Card>
