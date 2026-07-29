@@ -1,0 +1,65 @@
+---
+title: Multi-agente — broadcast y selección
+description: Cómo trabajar con varios agentes en un mismo workspace, enviar mensajes a todos o a uno específico.
+---
+
+En un workspace con múltiples agentes podés elegir a quién le hablás: a todos a la vez (broadcast) o a un agente específico usando `@nombre`.
+
+## Agregar agentes al workspace
+
+1. Abrí el workspace → pestaña **Chat**
+2. En el panel lateral, hacé clic en **Agregar agente**
+3. Seleccioná los agentes de tu lista
+4. Cada agente aparece en el sidebar con su nombre y modelo
+
+Podés tener tantos agentes como quieras en un workspace.
+
+## Broadcast — hablarle a todos
+
+Cuando escribís un mensaje sin `@`, todos los agentes activos en el workspace reciben el prompt y responden.
+
+```
+¿Cuál es el estado del proyecto?
+```
+
+Todos los agentes responden en paralelo. Útil para obtener múltiples perspectivas sobre la misma pregunta.
+
+**Casos de uso:**
+- Pedir opiniones a agentes con distintos roles (Dev, PM, QA)
+- Asegurarte de que todos tienen el mismo contexto
+- Comparar enfoques antes de decidir
+
+## Selección individual — `@nombre`
+
+Usá `@` seguido del nombre del agente para hablarle solo a ese agente:
+
+```
+@Dev revisá el código que pegué arriba y buscá posibles bugs
+```
+
+```
+@PM ¿cómo priorizarías estas features para el sprint?
+```
+
+Solo ese agente recibe el mensaje y responde.
+
+**Casos de uso:**
+- Delegar tareas específicas a cada agente según su especialidad
+- Hacer seguimiento con un agente en particular
+- Evitar ruido cuando solo necesitás una perspectiva
+
+## Delegación entre agentes
+
+Un agente puede mencionar a otro en su respuesta para pasar el trabajo:
+
+```
+Dev: Terminé el análisis técnico. @PM ¿podés definir las prioridades en base a esto?
+```
+
+El agente PM recibe el contexto de la respuesta anterior y continúa desde ahí. Ver [Delegación entre agentes](/guides/agent-delegation) para el flujo completo.
+
+## Tips
+
+- El nombre del `@` tiene que coincidir exactamente con el nombre del agente (sin espacios, el autocompletado te ayuda)
+- Si dos agentes tienen nombres parecidos, usá el nombre completo para evitar ambigüedad
+- En broadcast, cada agente responde con su propio contexto y personalidad — las respuestas pueden ser distintas aunque reciban el mismo prompt

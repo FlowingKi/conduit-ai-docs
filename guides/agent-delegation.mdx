@@ -1,0 +1,77 @@
+---
+title: Delegación entre agentes
+description: Cómo un agente puede pasarle trabajo a otro agente dentro del mismo workspace.
+---
+
+La delegación permite que un agente transfiera una tarea a otro agente usando `@nombre`. El agente receptor recibe el contexto de la conversación y continúa desde donde el anterior dejó.
+
+## Cómo funciona
+
+Cuando un agente menciona `@OtroAgente` en su respuesta, Conduit AI dirige el próximo turno de la conversación a ese agente. El agente receptor ve el historial completo de la conversación, incluyendo la respuesta que lo mencionó.
+
+```
+Usuario → @Dev
+Dev → analiza el problema → "Para el diseño de la API, @Architect ¿podés revisar esto?"
+Architect → recibe el contexto → responde con su análisis
+```
+
+## Ejemplo paso a paso
+
+**Workspace con tres agentes: Dev, QA, PM**
+
+1. El usuario envía:
+```
+Necesito implementar un sistema de autenticación con JWT. ¿Qué necesitamos?
+```
+
+2. **Dev** responde (broadcast):
+```
+Voy a necesitar: middleware de JWT, refresh tokens, y protección de rutas.
+@QA ¿qué casos de prueba necesitamos cubrir para esto?
+```
+
+3. **QA** recibe la mención y responde:
+```
+Casos de prueba clave:
+- Token expirado
+- Token inválido
+- Refresh token rotado
+@PM ¿tenemos tiempo en el sprint para cubrir todos estos casos?
+```
+
+4. **PM** recibe la mención y responde con la planificación.
+
+## Cuándo usar delegación
+
+| Situación | Usar delegación |
+|-----------|----------------|
+| Una tarea requiere expertise de otro agente | ✓ |
+| Querés pipeline de revisión (Dev → QA → PM) | ✓ |
+| Solo necesitás una respuesta rápida | ✗ Usá `@agente` directo |
+| Todos necesitan la misma info | ✗ Usá broadcast |
+
+## Encadenamiento de agentes
+
+Podés construir pipelines de varios pasos donde cada agente procesa y pasa al siguiente:
+
+```
+Dev (implementa) → @QA (revisa) → @PM (aprueba) → @Dev (ajusta)
+```
+
+Este patrón es útil para flujos de trabajo con revisión y aprobación.
+
+## Delegación en el canvas
+
+En las automatizaciones, la delegación entre agentes se implementa con nodos **Agent** en secuencia, donde el output de uno es el input del siguiente:
+
+```
+Nodo Agent (Dev) → Nodo Agent (QA con {{outputs.Dev.output}}) → Nodo Tool (Slack)
+```
+
+Esto es más predecible que la delegación conversacional para flujos automatizados.
+
+## Tips
+
+- La delegación funciona mejor cuando cada agente tiene un rol y personalidad bien definidos
+- Si un agente delega y el receptor no responde como esperabas, revisá el system prompt del agente receptor
+- Podés interrumpir la cadena de delegación escribiendo un mensaje directo al agente que querés

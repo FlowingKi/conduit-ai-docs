@@ -1,0 +1,83 @@
+---
+title: Configurar un schedule (cron)
+description: Cómo programar automatizaciones para que se ejecuten automáticamente en intervalos regulares.
+---
+
+El trigger de tipo **Schedule** ejecuta una automatización en forma recurrente según una expresión cron — sin necesidad de que un evento externo la dispare.
+
+## Casos de uso
+
+- Resumen diario de tareas a las 9am
+- Reporte semanal de métricas los lunes
+- Limpieza de datos cada hora
+- Notificación de standups cada mañana de lunes a viernes
+
+## Paso 1 — Crear la automatización con trigger Schedule
+
+1. Abrí un workspace → pestaña **Canvas**
+2. Hacé clic en **Nueva automatización**
+3. En el nodo **Trigger**, elegí el tipo **Schedule**
+4. Configurá la expresión cron
+
+## Expresiones cron
+
+El schedule usa el formato estándar de 5 campos:
+
+```
+┌─── minuto (0-59)
+│ ┌─── hora (0-23)
+│ │ ┌─── día del mes (1-31)
+│ │ │ ┌─── mes (1-12)
+│ │ │ │ ┌─── día de la semana (0-6, 0=domingo)
+│ │ │ │ │
+* * * * *
+```
+
+### Ejemplos comunes
+
+| Descripción | Expresión |
+|-------------|-----------|
+| Cada día a las 9am | `0 9 * * *` |
+| Cada lunes a las 8am | `0 8 * * 1` |
+| Cada hora | `0 * * * *` |
+| Lunes a viernes a las 9am | `0 9 * * 1-5` |
+| Cada 30 minutos | `*/30 * * * *` |
+| Primer día del mes a medianoche | `0 0 1 * *` |
+| Cada domingo a las 10pm | `0 22 * * 0` |
+
+<Note>
+La zona horaria del schedule es UTC. Si estás en UTC-3 (Argentina), sumá 3 horas a la hora que querés. Ejemplo: para las 9am Argentina, usá `0 12 * * *`.
+</Note>
+
+## Paso 2 — Construir el flow
+
+El trigger de Schedule no tiene payload — no hay `{{trigger._payload}}`. El flow empieza directamente con los nodos que configure.
+
+**Ejemplo — resumen diario de issues de GitHub:**
+
+```
+Schedule (0 9 * * 1-5)
+  └── Tool (GITHUB_LIST_ISSUES)
+        └── Agent (resume los issues abiertos)
+              └── Tool (SLACK_SENDS_A_MESSAGE → #equipo)
+```
+
+## Paso 3 — Activar
+
+1. Hacé clic en **Activar** en la barra del canvas
+2. La automatización se ejecuta automáticamente en el próximo horario programado
+3. Podés ver el historial de ejecuciones en **Monitor**
+
+## Variables disponibles en Schedule
+
+Aunque no hay payload, podés usar estas variables de contexto:
+
+| Variable | Valor |
+|----------|-------|
+| `{{trigger.timestamp}}` | Fecha y hora de ejecución (ISO 8601) |
+
+## Pausar o modificar
+
+- **Pausar**: cambiá el estado de la automatización a inactivo desde el canvas
+- **Modificar el horario**: editá la expresión cron en el nodo Trigger y volvé a activar
+- **Ejecutar manualmente**: usá el trigger **Manual** para probar el flow sin esperar al cron

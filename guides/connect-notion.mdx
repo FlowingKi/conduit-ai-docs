@@ -1,0 +1,55 @@
+---
+title: Conectar Notion
+description: Conectá tu workspace de Notion via OAuth para que tus agentes puedan leer y escribir páginas, bases de datos y más.
+---
+
+Conectar Notion via Composio le da a tus agentes acceso a tu workspace — pueden crear y editar páginas, insertar filas en bases de datos, buscar contenido y mucho más.
+
+## Paso 1 — Conectar via OAuth
+
+1. Abrí **Connections**
+2. Buscá **Notion** en la lista de servicios
+3. Hacé clic en **Conectar**
+4. Se abre el flujo OAuth de Notion — seleccioná las páginas o workspaces a los que querés dar acceso
+5. Cuando termine, volvés a Conduit AI con el estado **Conectado**
+
+<Note>
+Notion requiere que selecciones explícitamente qué páginas y bases de datos compartís. Si un agente no puede acceder a algo, probablemente no fue incluido en ese paso.
+</Note>
+
+## Qué podés hacer con Notion conectado
+
+- Crear y editar páginas
+- Insertar y actualizar filas en bases de datos
+- Consultar bases de datos con filtros
+- Buscar páginas por nombre
+- Agregar comentarios
+
+## Casos de uso típicos
+
+**Registro automático de tareas:**
+Trigger: webhook con nueva tarea → agente formatea los datos → inserta fila en base de datos de Notion
+
+**Generación de reportes:**
+Schedule semanal → agente resume la actividad → crea página en Notion con el reporte
+
+**Base de conocimiento:**
+El agente guarda resúmenes de conversaciones importantes como páginas en Notion
+
+## Actions disponibles
+
+Las más usadas del nodo Tool:
+
+| Acción | Slug |
+|--------|------|
+| Crear página | `NOTION_CREATE_NOTION_PAGE` |
+| Actualizar página | `NOTION_UPDATE_PAGE` |
+| Buscar página | `NOTION_SEARCH_NOTION_PAGE` |
+| Insertar fila en DB | `NOTION_INSERT_ROW_DATABASE` |
+| Consultar DB | `NOTION_QUERY_DATABASE` |
+
+Ver lista completa en [Tools Commands](/reference/composio-tools).
+
+## Revocar acceso
+
+Abrí **Connections**, buscá Notion y hacé clic en **Desconectar**. También podés revocar desde **Notion → Settings → Connections**.

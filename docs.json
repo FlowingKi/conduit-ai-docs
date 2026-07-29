@@ -45,9 +45,16 @@
           "guides/connect-ollama",
           "guides/connect-github",
           "guides/connect-slack",
+          "guides/connect-notion",
+          "guides/connect-gmail",
+          "guides/connect-google-drive",
           "guides/configure-webhook",
+          "guides/configure-schedule",
           "guides/build-automation",
-          "guides/create-skill"
+          "guides/create-skill",
+          "guides/use-memory-obsidian",
+          "guides/multi-agent",
+          "guides/agent-delegation"
         ]
       },
       {
@@ -67,7 +74,8 @@
         "pages": [
           "developer/architecture",
           "developer/bridge-endpoints",
-          "developer/mcp-integration"
+          "developer/mcp-integration",
+          "developer/webhook-events"
         ]
       }
     ]

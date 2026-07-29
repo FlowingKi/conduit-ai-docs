@@ -1,0 +1,94 @@
+---
+title: Usar Memory con Obsidian
+description: Cómo sincronizar la memoria de tus agentes con un vault de Obsidian para tener contexto persistente y accesible.
+---
+
+Conduit AI puede sincronizar la memoria de tus agentes con un vault de Obsidian. Los hechos, notas y sesiones se guardan como archivos `.md` en tu vault, donde podés leerlos, editarlos y conectarlos con el resto de tu base de conocimiento.
+
+## Cómo funciona
+
+El bridge actúa como intermediario entre Conduit AI y tu vault de Obsidian. Cuando un agente guarda un hecho o destila una sesión, el bridge escribe el archivo en la carpeta correspondiente del vault.
+
+```
+Agente → Bridge → Vault de Obsidian
+                    ├── BRAIN/          ← hechos y exports de memoria
+                    └── CONTEXT/
+                          └── sesiones/ ← sesiones destiladas
+```
+
+## Requisitos
+
+- Bridge corriendo con acceso al vault
+- Obsidian instalado con el vault abierto (no es estrictamente necesario para que el bridge escriba, pero sí para ver los archivos)
+
+## Paso 1 — Configurar la ruta del vault
+
+1. Abrí **Settings → Bridge**
+2. En el campo **Vault path**, ingresá la ruta absoluta a tu vault de Obsidian:
+   - Windows: `C:\Users\juan\ObsidianVault`
+   - Mac/Linux: `/Users/juan/ObsidianVault`
+3. Guardá
+
+## Paso 2 — Crear la estructura del vault
+
+Conduit AI puede crear automáticamente las carpetas necesarias en tu vault.
+
+1. Desde **Settings → Bridge**, hacé clic en **Configurar vault**
+2. Seleccioná los agentes que querés incluir
+3. El bridge crea:
+   - `BRAIN/` — para hechos y exports de memoria
+   - `CONTEXT/sesiones/` — para sesiones destiladas
+   - `CONTEXT/memoria/` — para notas de memoria
+
+## Paso 3 — Cambiar el storage a local
+
+1. Abrí la pestaña **Memory** en un workspace
+2. En configuración, cambiá **Storage** de `cloud` a `local`
+3. A partir de ahí, los hechos y notas se guardan en el vault
+
+## Guardar en el vault
+
+### Destilar una sesión
+
+Desde la pestaña **Memory** de cualquier workspace:
+
+1. Hacé clic en **Destilar sesión**
+2. El agente resume la conversación actual
+3. El bridge guarda el archivo en `CONTEXT/sesiones/sesion-FECHA.md`
+
+### Export de memoria
+
+Para exportar todos los hechos del workspace:
+
+1. Pestaña **Memory** → **Exportar**
+2. El archivo se guarda en `BRAIN/memoria-FECHA.md`
+
+### Guardar manualmente
+
+Podés pedirle al agente que guarde algo específico:
+
+```
+Guardá en el vault un resumen de las decisiones que tomamos hoy
+```
+
+El agente usa el bridge para escribir el archivo en la ruta correspondiente.
+
+## Leer desde el vault
+
+Los agentes pueden buscar y leer archivos del vault durante una conversación:
+
+```
+Buscá en el vault cualquier nota sobre la arquitectura del proyecto
+```
+
+El bridge busca en `CONTEXT/` y devuelve el contenido relevante al agente.
+
+## Árbol del vault
+
+Desde la pestaña **Memory** podés ver el árbol de archivos del vault sin salir de Conduit AI. Hacé clic en cualquier archivo para leer su contenido.
+
+## Tips
+
+- Los archivos del vault son archivos Markdown normales — podés editarlos directamente en Obsidian y los cambios los lee el agente la próxima vez que los consulte
+- Si borrás un archivo del vault, el agente deja de tener acceso a ese contexto
+- Podés usar plugins de Obsidian (Dataview, Tags, etc.) sobre los archivos que genera Conduit AI

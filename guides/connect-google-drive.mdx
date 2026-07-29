@@ -1,0 +1,52 @@
+---
+title: Conectar Google Drive
+description: Conectá tu Google Drive via OAuth para que tus agentes puedan leer, crear y gestionar archivos.
+---
+
+Conectar Google Drive via Composio le da a tus agentes acceso a tus archivos — pueden buscar, leer, crear y editar documentos, hojas de cálculo y carpetas.
+
+## Paso 1 — Conectar via OAuth
+
+1. Abrí **Connections**
+2. Buscá **Google Drive** en la lista de servicios
+3. Hacé clic en **Conectar**
+4. Se abre el flujo OAuth de Google — autorizá el acceso a Drive
+5. Cuando termine, volvés a Conduit AI con el estado **Conectado**
+
+## Qué podés hacer con Google Drive conectado
+
+- Buscar y leer archivos
+- Crear archivos y carpetas
+- Subir y descargar contenido
+- Compartir archivos y gestionar permisos
+- Exportar documentos de Google Workspace (Docs, Sheets) a PDF o markdown
+
+## Casos de uso típicos
+
+**Generación de reportes:**
+Agente genera contenido → crea un Google Doc con el reporte → lo comparte con el equipo
+
+**Búsqueda de contexto:**
+Agente busca archivos relevantes en Drive antes de responder una consulta
+
+**Archivo automático:**
+Trigger: nueva tarea completada → agente crea carpeta en Drive → sube el resultado
+
+## Actions disponibles
+
+Las más usadas del nodo Tool:
+
+| Acción | Slug |
+|--------|------|
+| Crear archivo desde texto | `GOOGLEDRIVE_CREATE_FILE_FROM_TEXT` |
+| Buscar archivo | `GOOGLEDRIVE_FIND_FILE` |
+| Descargar archivo | `GOOGLEDRIVE_DOWNLOAD_FILE` |
+| Crear carpeta | `GOOGLEDRIVE_CREATE_FOLDER` |
+| Compartir archivo | `GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE` |
+| Exportar (Docs/Sheets) | `GOOGLEDRIVE_EXPORT_GOOGLE_WORKSPACE_FILE` |
+
+Ver lista completa en [Tools Commands](/reference/composio-tools).
+
+## Revocar acceso
+
+Abrí **Connections**, buscá Google Drive y hacé clic en **Desconectar**. También podés revocar desde **Google Account → Security → Third-party apps**.

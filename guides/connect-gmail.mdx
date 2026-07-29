@@ -1,0 +1,57 @@
+---
+title: Conectar Gmail
+description: Conectá tu cuenta de Gmail via OAuth para que tus agentes puedan leer, enviar y gestionar emails.
+---
+
+Conectar Gmail via Composio le da a tus agentes acceso a tu bandeja — pueden leer correos, enviar respuestas, crear borradores, gestionar labels y más.
+
+## Paso 1 — Conectar via OAuth
+
+1. Abrí **Connections**
+2. Buscá **Gmail** en la lista de servicios
+3. Hacé clic en **Conectar**
+4. Se abre el flujo OAuth de Google — autorizá el acceso a Gmail
+5. Cuando termine, volvés a Conduit AI con el estado **Conectado**
+
+<Note>
+La conexión usa OAuth de Google — nunca ingresás tu contraseña en Conduit AI. Podés revocar el acceso en cualquier momento desde tu cuenta de Google.
+</Note>
+
+## Qué podés hacer con Gmail conectado
+
+- Enviar emails y responder en hilos
+- Leer y buscar mensajes
+- Crear y enviar borradores
+- Agregar y quitar labels
+- Gestionar hilos
+- Reenviar mensajes
+
+## Casos de uso típicos
+
+**Respuesta automática a consultas:**
+Trigger: webhook con nueva consulta → agente redacta respuesta → envía por Gmail
+
+**Resumen de bandeja:**
+Schedule diario → agente lee los emails no leídos → genera resumen → lo envía a Slack
+
+**Clasificación de emails:**
+Schedule → agente lee emails → aplica labels según categoría → archiva los procesados
+
+## Actions disponibles
+
+Las más usadas del nodo Tool:
+
+| Acción | Slug |
+|--------|------|
+| Enviar email | `GMAIL_SEND_EMAIL` |
+| Leer emails | `GMAIL_FETCH_EMAILS` |
+| Responder en hilo | `GMAIL_REPLY_TO_THREAD` |
+| Crear borrador | `GMAIL_CREATE_EMAIL_DRAFT` |
+| Agregar label | `GMAIL_ADD_LABEL_TO_EMAIL` |
+| Buscar mensajes | `GMAIL_LIST_MESSAGES` |
+
+Ver lista completa en [Tools Commands](/reference/composio-tools).
+
+## Revocar acceso
+
+Abrí **Connections**, buscá Gmail y hacé clic en **Desconectar**. También podés revocar desde **Google Account → Security → Third-party apps**.

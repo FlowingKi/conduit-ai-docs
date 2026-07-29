@@ -1,0 +1,109 @@
+---
+title: Webhook events
+description: Formato del payload entrante, headers, y comportamiento del endpoint de webhooks.
+---
+
+El endpoint de webhooks de Conduit AI recibe payloads de sistemas externos y dispara automáticamente la automatización correspondiente.
+
+## Endpoint
+
+```
+POST https://conduit-ai-prod.vercel.app/api/webhooks/{webhook_id}
+```
+
+El `webhook_id` es único por automatización. Se genera automáticamente al crear un trigger de tipo Webhook en el canvas.
+
+## Request
+
+### Headers
+
+```http
+Content-Type: application/json
+```
+
+El header `Content-Type` es opcional — si no se envía, el endpoint intenta parsear el body como JSON de todas formas.
+
+### Body
+
+Acepta cualquier JSON válido:
+
+```json
+{
+  "event": "pr.merged",
+  "repo": "mi-proyecto",
+  "author": "juan",
+  "title": "Fix: corrección en auth"
+}
+```
+
+Si el body no es JSON válido, se guarda como:
+```json
+{ "raw": "contenido del body como string" }
+```
+
+## Response
+
+El endpoint responde inmediatamente — no espera que el flow termine.
+
+```json
+// Éxito (202)
+{ "ok": true }
+
+// Automatización inactiva o webhook_id no encontrado (404)
+{ "error": "Webhook not found or automation inactive" }
+
+// Error interno (500)
+{ "error": "Failed to queue automation run" }
+```
+
+## Comportamiento
+
+1. El endpoint recibe el `POST` y valida que exista una automatización activa con ese `webhook_id`
+2. Inserta un registro en `automation_runs` con `status: pending` y el payload recibido
+3. El bridge detecta el nuevo registro via Supabase Realtime y ejecuta el flow
+4. El payload queda disponible en todos los nodos como `{{trigger._payload}}`
+
+## Acceder al payload en el flow
+
+```
+{{trigger._payload}}                    → objeto completo
+{{trigger._payload.event}}             → campo de primer nivel
+{{trigger._payload.repo.name}}         → campo anidado
+```
+
+## Condiciones sobre el payload
+
+En un nodo **Condition**, podés filtrar eventos específicos:
+
+```
+Campo:     {{trigger._payload.event}}
+Operador:  equals
+Valor:     pr.merged
+```
+
+Esto permite tener una sola automatización que recibe múltiples tipos de eventos y bifurca según el tipo.
+
+## Rate limiting
+
+No hay rate limiting por defecto. Para flows que podrían recibir muchos webhooks en poco tiempo, considerá agregar un nodo **Condition** al inicio que filtre los eventos relevantes y descarte el resto rápidamente.
+
+## Seguridad
+
+El endpoint es público — cualquiera que tenga el `webhook_id` puede disparar la automatización. Si necesitás validar que el request viene del sistema correcto:
+
+1. Agregá un nodo **Condition** al inicio del flow
+2. Verificá un header o campo secreto en el payload:
+   ```
+   Campo:     {{trigger._payload.secret}}
+   Operador:  equals
+   Valor:     TU_SECRETO
+   ```
+3. Si no coincide, terminá el flow sin ejecutar las acciones principales
+
+## Prueba manual
+
+```bash
+curl -X POST https://conduit-ai-prod.vercel.app/api/webhooks/TU_WEBHOOK_ID \
+  -H "Content-Type: application/json" \
+  -d '{"test": true, "mensaje": "prueba"}'
+```
