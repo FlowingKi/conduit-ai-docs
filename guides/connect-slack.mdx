@@ -1,6 +1,41 @@
 ---
-title: connect slack
-description: Próximamente.
+title: Conectar Slack
+description: Conectá tu workspace de Slack para que tus agentes puedan leer y enviar mensajes.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Con Slack conectado, tus agentes pueden enviar mensajes a canales, leer conversaciones y reaccionar a mensajes nuevos desde automatizaciones.
+
+## Paso 1 — Conectar via OAuth
+
+1. Abrí **Connections**
+2. Buscá **Slack** en la lista de servicios
+3. Hacé clic en **Conectar**
+4. Se abre el flujo OAuth de Slack — seleccioná el workspace y autorizá el acceso
+5. Cuando termine, volvés a Conduit AI con el estado **Conectado**
+
+<Note>
+Necesitás tener permisos de administrador en el workspace de Slack, o que un admin apruebe la instalación de la app.
+</Note>
+
+## Qué podés hacer con Slack conectado
+
+- Enviar mensajes a canales o usuarios
+- Leer mensajes de canales
+- Reaccionar a mensajes con emojis
+- Crear threads de respuesta
+- Obtener la lista de canales y miembros
+
+## Casos de uso típicos
+
+**Notificaciones automáticas:**
+Trigger: webhook externo → agente procesa → envía resumen a `#general`
+
+**Resumen diario:**
+Schedule: lunes 9am → agente revisa tareas pendientes → publica en `#daily-standup`
+
+**Alertas de errores:**
+Trigger: evento de servicio → condición: error → envía alerta a `#alertas`
+
+## Revocar acceso
+
+Para desconectar Slack, abrí **Connections**, buscá Slack y hacé clic en **Desconectar**. También podés revocar desde **Slack → Settings → Manage apps**.

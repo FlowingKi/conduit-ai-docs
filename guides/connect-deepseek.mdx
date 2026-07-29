@@ -1,6 +1,31 @@
 ---
-title: connect deepseek
-description: Próximamente.
+title: Conectar DeepSeek
+description: Configurá tu API key de DeepSeek para usar DeepSeek-V3 y R1 en tus agentes.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+DeepSeek ofrece modelos de alta capacidad a costo muy bajo. DeepSeek-V3 y R1 son especialmente buenos para código y razonamiento.
+
+## Paso 1 — Obtener tu API key
+
+1. Entrá a [platform.deepseek.com](https://platform.deepseek.com)
+2. Registrate o iniciá sesión
+3. En el menú izquierdo, hacé clic en **API keys**
+4. Hacé clic en **Create new API key**
+5. Copiá la key generada
+
+## Paso 2 — Conectar en Conduit AI
+
+1. Abrí **Connections → AI Models**
+2. Buscá **DeepSeek** y hacé clic en **Conectar**
+3. Pegá tu API key y guardá
+
+## Modelos disponibles
+
+| Modelo | Cuándo usarlo |
+|--------|---------------|
+| `deepseek-chat` (V3) | Uso general, código, bajo costo |
+| `deepseek-reasoner` (R1) | Razonamiento complejo, matemática, análisis |
+
+## Ventaja de costo
+
+DeepSeek es significativamente más barato que GPT-4o para tareas equivalentes. Buena opción para agentes de alto volumen o cuando el costo es una prioridad.

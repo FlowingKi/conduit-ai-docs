@@ -1,6 +1,36 @@
 ---
-title: connect google ai
-description: Próximamente.
+title: Conectar Google AI
+description: Configurá tu API key de Google AI Studio para usar Gemini en tus agentes.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Con Google AI podés usar los modelos Gemini (Gemini 1.5 Pro, Gemini 1.5 Flash, Gemini 2.0) en tus agentes de Conduit AI.
+
+## Paso 1 — Obtener tu API key
+
+1. Entrá a [aistudio.google.com](https://aistudio.google.com)
+2. En el menú izquierdo, hacé clic en **Get API key**
+3. Hacé clic en **Create API key**
+4. Seleccioná un proyecto de Google Cloud (o creá uno nuevo)
+5. Copiá la key generada
+
+<Note>
+La API key de Google AI Studio es gratuita con límites generosos. Para uso intensivo, los costos son por tokens y aparecen en tu cuenta de Google Cloud.
+</Note>
+
+## Paso 2 — Conectar en Conduit AI
+
+1. Abrí **Connections → AI Models**
+2. Buscá **Google AI** y hacé clic en **Conectar**
+3. Pegá tu API key y guardá
+
+## Modelos disponibles
+
+| Modelo | Cuándo usarlo |
+|--------|---------------|
+| `gemini-1.5-pro` | Razonamiento complejo, contexto hasta 1M tokens |
+| `gemini-1.5-flash` | Velocidad y costo bajo, bueno para tareas simples |
+| `gemini-2.0-flash` | Última generación, multimodal mejorado |
+
+## Capa gratuita
+
+Google AI Studio ofrece una capa gratuita con límites por minuto y por día. Si superás los límites, los requests fallan con error 429. Podés habilitarte facturación en Google Cloud para eliminarlo.

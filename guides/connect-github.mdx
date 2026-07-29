@@ -1,6 +1,45 @@
 ---
-title: connect github
-description: Próximamente.
+title: Conectar GitHub
+description: Conectá tu cuenta de GitHub via OAuth para que tus agentes puedan leer repos, crear issues, revisar PRs y más.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Conectar GitHub via Composio le da a tus agentes acceso a tu cuenta — pueden leer y escribir en repos, gestionar issues y pull requests, y reaccionar a eventos como nuevos PRs o merges.
+
+## Paso 1 — Conectar via OAuth
+
+1. Abrí **Connections**
+2. Buscá **GitHub** en la lista de servicios
+3. Hacé clic en **Conectar**
+4. Se abre el flujo OAuth de GitHub — autorizá el acceso
+5. Cuando termine, volvés a Conduit AI con el estado **Conectado**
+
+<Note>
+La conexión usa OAuth — nunca ingresás tu contraseña en Conduit AI. Los permisos se otorgan directamente desde GitHub.
+</Note>
+
+## Qué podés hacer con GitHub conectado
+
+Una vez conectado, tus agentes tienen acceso a herramientas de GitHub via Composio:
+
+- Leer y crear issues
+- Revisar y comentar pull requests
+- Leer el contenido de archivos en repos
+- Ver commits y diffs
+- Crear y cerrar branches
+
+Estas herramientas están disponibles como nodos **tool** en el canvas de automatizaciones.
+
+## Casos de uso típicos
+
+**Automatización de code review:**
+Trigger: nuevo PR abierto → agente revisa el diff → comenta en el PR con observaciones
+
+**Resumen de issues:**
+Schedule diario → agente lista los issues abiertos → genera resumen → lo guarda en Memory
+
+**Notificación de merges:**
+Trigger: PR mergeado → agente notifica al equipo en Slack
+
+## Revocar acceso
+
+Para desconectar GitHub, abrí **Connections**, buscá GitHub y hacé clic en **Desconectar**. También podés revocar el acceso desde **GitHub → Settings → Applications → Authorized OAuth Apps**.

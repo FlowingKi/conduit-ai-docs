@@ -1,6 +1,41 @@
 ---
-title: connect openai
-description: Próximamente.
+title: Conectar OpenAI
+description: Configurá tu API key de OpenAI para usar GPT-4o y otros modelos en tus agentes.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Con tu API key de OpenAI podés usar GPT-4o, GPT-4o mini, GPT-4 Turbo y otros modelos en cualquier agente de Conduit AI.
+
+## Antes de empezar
+
+Necesitás una cuenta en OpenAI con créditos disponibles. Las API keys son distintas a la suscripción de ChatGPT — son para uso programático y se cobran por tokens usados.
+
+## Paso 1 — Obtener tu API key
+
+1. Entrá a [platform.openai.com](https://platform.openai.com)
+2. En el menú izquierdo, hacé clic en **API keys**
+3. Hacé clic en **Create new secret key**
+4. Poné un nombre (ej: "Conduit AI") y copiá la key
+
+<Warning>
+Guardá la key en un lugar seguro. OpenAI no la vuelve a mostrar después de crearla.
+</Warning>
+
+## Paso 2 — Conectar en Conduit AI
+
+1. Abrí **Connections → AI Models**
+2. Buscá **OpenAI** y hacé clic en **Conectar**
+3. Pegá tu API key y guardá
+
+El servicio muestra estado **Conectado** cuando la key es válida. Al crear o editar un agente, los modelos de OpenAI aparecen en el selector de modelo.
+
+## Modelos disponibles
+
+| Modelo | Cuándo usarlo |
+|--------|---------------|
+| `gpt-4o` | Tareas complejas, razonamiento, multimodal |
+| `gpt-4o-mini` | Tareas simples, alto volumen, costo bajo |
+| `gpt-4-turbo` | Contexto largo |
+
+## Gestión de créditos
+
+El consumo se ve en [platform.openai.com/usage](https://platform.openai.com/usage). Si los créditos llegan a cero, el agente devuelve error — recargá desde **Billing** en el dashboard de OpenAI.

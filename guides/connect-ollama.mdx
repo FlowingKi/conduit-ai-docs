@@ -1,6 +1,64 @@
 ---
-title: connect ollama
-description: Próximamente.
+title: Conectar Ollama (pendiente de revisión)
+description: Configurá Ollama para correr modelos de IA localmente. La UI de conexión está pendiente de mejoras.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+<Warning>
+La pantalla de conexión de Ollama actualmente muestra un campo genérico "API Key" que no aplica a Ollama. Ollama no usa API keys — usa una URL de servidor local. Esta inconsistencia está marcada para corrección en Sprint-19. Las instrucciones de abajo te guían por el proceso actual.
+</Warning>
+
+Ollama te permite correr modelos de IA (Llama, Mistral, Gemma, etc.) directamente en tu computadora, sin enviar datos a servidores externos. Es la opción más privada y no tiene costo por token.
+
+## Paso 1 — Instalar Ollama
+
+1. Descargá Ollama desde [ollama.com](https://ollama.com)
+2. Instalalo siguiendo las instrucciones para tu sistema operativo
+3. Verificá que esté corriendo — abrí una terminal y ejecutá:
+   ```bash
+   ollama list
+   ```
+   Si muestra una lista (o vacía sin error), Ollama está activo.
+
+## Paso 2 — Descargar un modelo
+
+```bash
+# Modelos recomendados para empezar
+ollama pull llama3.2        # 2GB — rápido y capaz
+ollama pull gemma3          # 5GB — muy buena calidad
+ollama pull mistral         # 4GB — bueno para código
+```
+
+Ollama corre en `http://localhost:11434` por defecto.
+
+## Paso 3 — Conectar en Conduit AI (proceso actual)
+
+<Steps>
+  <Step title="Abrí Connections → AI Models">
+    Buscá **Ollama** y hacé clic en **Conectar**.
+  </Step>
+  <Step title="En el campo 'API Key'">
+    Ignorá el label — ingresá la URL de tu servidor Ollama:
+    ```
+    http://localhost:11434
+    ```
+    Si Ollama corre en otro puerto o máquina, cambiá la URL según corresponda.
+  </Step>
+  <Step title="Guardá">
+    Los modelos que tengas descargados deberían aparecer en el selector de modelos de los agentes.
+  </Step>
+</Steps>
+
+## Requisitos
+
+- Ollama tiene que estar corriendo **mientras usás Conduit AI** — es un proceso local
+- El bridge también tiene que estar activo para que la comunicación funcione
+- Necesitás suficiente RAM: mínimo 8GB para modelos de 7B, 16GB+ para modelos más grandes
+
+## Modelos disponibles (ejemplos)
+
+| Modelo | Tamaño | RAM mínima | Mejor para |
+|--------|--------|------------|------------|
+| `llama3.2` | 2GB | 8GB | Uso general, rápido |
+| `gemma3` | 5GB | 8GB | Calidad alta, instrucciones |
+| `mistral` | 4GB | 8GB | Código, análisis |
+| `llama3.1:70b` | 40GB | 64GB | Máxima calidad local |
