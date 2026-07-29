@@ -1,85 +1,92 @@
 {
-  "$schema": "https://mintlify.com/schema.json",
+  "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Conduit AI",
-  "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
-  },
-  "favicon": "/favicon.svg",
   "colors": {
     "primary": "#7C3AED",
     "light": "#A78BFA",
     "dark": "#5B21B6"
   },
-  "topbarLinks": [
-    {
-      "name": "conduit-ai.com",
-      "url": "https://conduit-ai.com"
-    }
-  ],
-  "topbarCtaButton": {
-    "name": "Abrir app",
-    "url": "https://conduit-ai.com"
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
   },
-  "navigation": [
-    {
-      "group": "Primeros pasos",
-      "pages": [
-        "getting-started/what-is-conduit-ai",
-        "getting-started/install-bridge",
-        "getting-started/first-agent",
-        "getting-started/first-workspace",
-        "getting-started/first-automation"
-      ]
-    },
-    {
-      "group": "Conceptos",
-      "pages": [
-        "concepts/agents",
-        "concepts/workspaces",
-        "concepts/memory",
-        "concepts/skills",
-        "concepts/automations",
-        "concepts/connections",
-        "concepts/monitor"
-      ]
-    },
-    {
-      "group": "Guías",
-      "pages": [
-        "guides/connect-openai",
-        "guides/connect-google-ai",
-        "guides/connect-deepseek",
-        "guides/connect-ollama",
-        "guides/connect-github",
-        "guides/connect-slack",
-        "guides/configure-webhook",
-        "guides/build-automation",
-        "guides/create-skill"
-      ]
-    },
-    {
-      "group": "Referencia",
-      "pages": [
-        "reference/canvas-nodes",
-        "reference/variables",
-        "reference/trigger-types",
-        "reference/condition-operators",
-        "reference/skill-format",
-        "reference/bridge-api"
-      ]
-    },
-    {
-      "group": "Developer",
-      "pages": [
-        "developer/architecture",
-        "developer/bridge-endpoints",
-        "developer/mcp-integration"
-      ]
+  "navigation": {
+    "pages": [
+      {
+        "group": "Primeros pasos",
+        "pages": [
+          "getting-started/what-is-conduit-ai",
+          "getting-started/install-bridge",
+          "getting-started/first-agent",
+          "getting-started/first-workspace",
+          "getting-started/first-automation"
+        ]
+      },
+      {
+        "group": "Conceptos",
+        "pages": [
+          "concepts/agents",
+          "concepts/workspaces",
+          "concepts/memory",
+          "concepts/skills",
+          "concepts/automations",
+          "concepts/connections",
+          "concepts/monitor"
+        ]
+      },
+      {
+        "group": "Guías",
+        "pages": [
+          "guides/connect-openai",
+          "guides/connect-google-ai",
+          "guides/connect-deepseek",
+          "guides/connect-ollama",
+          "guides/connect-github",
+          "guides/connect-slack",
+          "guides/configure-webhook",
+          "guides/build-automation",
+          "guides/create-skill"
+        ]
+      },
+      {
+        "group": "Referencia",
+        "pages": [
+          "reference/canvas-nodes",
+          "reference/variables",
+          "reference/trigger-types",
+          "reference/condition-operators",
+          "reference/skill-format",
+          "reference/bridge-api"
+        ]
+      },
+      {
+        "group": "Developer",
+        "pages": [
+          "developer/architecture",
+          "developer/bridge-endpoints",
+          "developer/mcp-integration"
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "conduit-ai.com",
+        "href": "https://conduit-ai.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Abrir app",
+      "href": "https://conduit-ai.com"
     }
-  ],
-  "footerSocials": {
-    "website": "https://conduit-ai.com"
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/FlowingKi"
+    }
   }
 }
