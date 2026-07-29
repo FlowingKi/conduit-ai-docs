@@ -1,0 +1,744 @@
+---
+title: Tools de Composio
+description: Lista completa de servicios y acciones disponibles para usar en el nodo Tool y en el chat con agentes.
+---
+
+Composio expone más de **1.052 servicios** con miles de acciones. Todas se pueden usar en:
+- El **nodo Tool** del canvas (ejecución directa sin agente)
+- El **chat con agentes** (el modelo llama la tool automáticamente cuando la necesita)
+
+Para usar una acción, se escribe el slug exacto en el campo **Tool slug** del nodo Tool, o el agente la invoca por nombre en el chat.
+
+---
+
+## Desarrollo & DevOps
+
+### GitHub (`GITHUB`)
+| Acción | Slug |
+|--------|------|
+| Listar pull requests | `GITHUB_LIST_PULL_REQUESTS` |
+| Crear issue | `GITHUB_CREATE_AN_ISSUE` |
+| Cerrar issue | `GITHUB_CLOSE_ISSUE` |
+| Cerrar pull request | `GITHUB_CLOSE_PULL_REQUEST` |
+| Crear commit | `GITHUB_CREATE_A_COMMIT` |
+| Crear comentario en commit | `GITHUB_CREATE_A_COMMIT_COMMENT` |
+| Comparar dos commits | `GITHUB_COMPARE_TWO_COMMITS` |
+| Crear branch | `GITHUB_CREATE_A_REFERENCE` |
+| Crear tag | `GITHUB_CREATE_A_TAG_OBJECT` |
+| Crear release | `GITHUB_CREATE_A_RELEASE` |
+| Crear fork | `GITHUB_CREATE_A_FORK` |
+| Crear repo | `GITHUB_CREATE_A_REPOSITORY_FOR_THE_AUTHENTICATED_USER` |
+| Mergear pull request | `GITHUB_MERGE_A_PULL_REQUEST` |
+| Aprobar PR | `GITHUB_CREATE_A_REVIEW_FOR_A_PULL_REQUEST` |
+| Agregar asignee a issue | `GITHUB_ADD_ASSIGNEES_TO_AN_ISSUE` |
+| Agregar labels a issue | `GITHUB_ADD_LABELS_TO_AN_ISSUE` |
+| Crear review comment | `GITHUB_CREATE_A_REVIEW_COMMENT_FOR_A_PULL_REQUEST` |
+| Buscar issues | `GITHUB_LIST_ISSUES` |
+| Obtener issue | `GITHUB_GET_AN_ISSUE` |
+| Obtener repo | `GITHUB_GET_A_REPOSITORY` |
+| Obtener contenido de archivo | `GITHUB_GET_REPOSITORY_CONTENT` |
+| Crear/actualizar archivo | `GITHUB_CREATE_OR_UPDATE_FILE_CONTENTS` |
+| Borrar archivo | `GITHUB_DELETE_A_FILE` |
+| Listar commits | `GITHUB_LIST_COMMITS` |
+| Obtener commit | `GITHUB_GET_A_COMMIT` |
+| Listar contributors | `GITHUB_LIST_REPOSITORY_CONTRIBUTORS` |
+| Listar branches | `GITHUB_LIST_BRANCHES` |
+| Proteger branch | `GITHUB_UPDATE_BRANCH_PROTECTION` |
+| Cancelar workflow run | `GITHUB_CANCEL_WORKFLOW_RUN` |
+| Listar workflow runs | `GITHUB_LIST_WORKFLOW_RUNS_FOR_A_WORKFLOW` |
+| Bloquear usuario | `GITHUB_BLOCK_USER` |
+| Seguir usuario | `GITHUB_FOLLOW_A_USER` |
+| Listar stargazers | `GITHUB_LIST_STARGAZERS` |
+| Crear deploy key | `GITHUB_CREATE_A_DEPLOY_KEY` |
+| Crear webhook | `GITHUB_CREATE_A_REPOSITORY_WEBHOOK` |
+
+### GitLab (`GITLAB`)
+| Acción | Slug |
+|--------|------|
+| Listar proyectos | `GITLAB_LIST_ALL_PROJECTS` |
+| Crear issue | `GITLAB_CREATE_AN_ISSUE` |
+| Crear merge request | `GITLAB_CREATE_MERGE_REQUEST` |
+| Obtener pipeline | `GITLAB_GET_A_SINGLE_PIPELINE` |
+
+### Bitbucket (`BITBUCKET`)
+| Acción | Slug |
+|--------|------|
+| Crear pull request | `BITBUCKET_CREATE_PULL_REQUEST` |
+| Listar repositorios | `BITBUCKET_LIST_REPOSITORIES` |
+
+### Vercel (`VERCEL`)
+| Acción | Slug |
+|--------|------|
+| Listar deployments | `VERCEL_LIST_DEPLOYMENTS` |
+| Obtener deployment | `VERCEL_GET_DEPLOYMENT` |
+| Cancelar deployment | `VERCEL_CANCEL_DEPLOYMENT` |
+| Listar proyectos | `VERCEL_GET_PROJECTS` |
+| Crear proyecto | `VERCEL_CREATE_PROJECT` |
+
+---
+
+## Comunicación
+
+### Slack (`SLACK`)
+| Acción | Slug |
+|--------|------|
+| Enviar mensaje | `SLACK_SENDS_A_MESSAGE` |
+| Postear mensaje a canal | `SLACK_CHAT_POST_MESSAGE` |
+| Eliminar mensaje | `SLACK_DELETES_A_MESSAGE_FROM_A_CHAT` |
+| Buscar mensajes | `SLACK_FETCH_CONVERSATION_HISTORY` |
+| Buscar mensajes no leídos | `SLACK_GET_UNREAD_MESSAGES_FROM_USER` |
+| Responder en hilo | `SLACK_FETCH_MESSAGE_THREAD_FROM_A_CONVERSATION` |
+| Crear canal | `SLACK_CREATE_CHANNEL` |
+| Archivar canal | `SLACK_ARCHIVE_CONVERSATION` |
+| Eliminar canal | `SLACK_DELETE_CHANNEL` |
+| Invitar usuario a canal | `SLACK_INVITE_USERS_TO_A_SLACK_CHANNEL` |
+| Agregar reacción | `SLACK_ADD_REACTION_TO_AN_ITEM` |
+| Buscar canales | `SLACK_FIND_CHANNELS` |
+| Buscar usuarios | `SLACK_FIND_USERS` |
+| Buscar usuario por email | `SLACK_FIND_USER_BY_EMAIL_ADDRESS` |
+| Obtener info del equipo | `SLACK_FETCH_TEAM_INFO` |
+| Crear recordatorio | `SLACK_CREATE_A_REMINDER` |
+| Eliminar recordatorio | `SLACK_DELETE_REMINDER` |
+| Obtener recordatorio | `SLACK_GET_REMINDER` |
+| Crear canvas | `SLACK_CREATE_CANVAS` |
+| Editar canvas | `SLACK_EDIT_CANVAS` |
+| Obtener canvas | `SLACK_GET_CANVAS` |
+| Obtener DM | `SLACK_GET_UNREAD_MESSAGES_FROM_USER` |
+| Crear lista | `SLACK_CREATE_SLACK_LIST` |
+| Descargar archivo | `SLACK_DOWNLOAD_SLACK_FILE` |
+
+### Discord (`DISCORD`)
+| Acción | Slug |
+|--------|------|
+| Enviar mensaje | `DISCORD_SEND_MESSAGE` |
+| Crear canal | `DISCORD_CREATE_CHANNEL` |
+| Listar canales | `DISCORD_LIST_CHANNELS` |
+
+### Microsoft Teams (`MICROSOFT_TEAMS`)
+| Acción | Slug |
+|--------|------|
+| Enviar mensaje | `MICROSOFT_TEAMS_SEND_A_MESSAGE` |
+| Crear canal | `MICROSOFT_TEAMS_CREATE_CHANNEL` |
+| Listar equipos | `MICROSOFT_TEAMS_LIST_TEAMS` |
+
+### Telegram (`TELEGRAM`)
+| Acción | Slug |
+|--------|------|
+| Enviar mensaje | `TELEGRAM_SEND_MESSAGE` |
+
+### WhatsApp (`WHATSAPP`)
+| Acción | Slug |
+|--------|------|
+| Enviar mensaje | `WHATSAPP_SEND_MESSAGE` |
+| Enviar template | `WHATSAPP_SEND_TEMPLATE_MESSAGE` |
+
+---
+
+## Email
+
+### Gmail (`GMAIL`)
+| Acción | Slug |
+|--------|------|
+| Enviar email | `GMAIL_SEND_EMAIL` |
+| Obtener emails | `GMAIL_FETCH_EMAILS` |
+| Listar mensajes | `GMAIL_LIST_MESSAGES` |
+| Obtener mensaje por ID | `GMAIL_FETCH_MESSAGE_BY_MESSAGE_ID` |
+| Obtener mensaje por hilo | `GMAIL_FETCH_MESSAGE_BY_THREAD_ID` |
+| Crear borrador | `GMAIL_CREATE_EMAIL_DRAFT` |
+| Enviar borrador | `GMAIL_SEND_DRAFT` |
+| Actualizar borrador | `GMAIL_UPDATE_DRAFT` |
+| Eliminar borrador | `GMAIL_DELETE_DRAFT` |
+| Listar borradores | `GMAIL_LIST_DRAFTS` |
+| Responder en hilo | `GMAIL_REPLY_TO_THREAD` |
+| Reenviar mensaje | `GMAIL_FORWARD_MESSAGE` |
+| Agregar label | `GMAIL_ADD_LABEL_TO_EMAIL` |
+| Eliminar label | `GMAIL_REMOVE_LABEL` |
+| Crear label | `GMAIL_CREATE_LABEL` |
+| Listar labels | `GMAIL_LIST_LABELS` |
+| Eliminar mensaje | `GMAIL_DELETE_MESSAGE` |
+| Mover a papelera | `GMAIL_MOVE_TO_TRASH` |
+| Obtener adjunto | `GMAIL_GET_ATTACHMENT` |
+| Buscar contactos | `GMAIL_GET_CONTACTS` |
+| Listar hilos | `GMAIL_LIST_THREADS` |
+| Modificar hilo | `GMAIL_MODIFY_THREAD_LABELS` |
+| Eliminar hilo | `GMAIL_DELETE_THREAD` |
+| Obtener perfil | `GMAIL_GET_PROFILE` |
+| Crear filtro | `GMAIL_CREATE_FILTER` |
+| Listar filtros | `GMAIL_LIST_FILTERS` |
+
+### Outlook (`OUTLOOK`)
+| Acción | Slug |
+|--------|------|
+| Enviar email | `OUTLOOK_SEND_EMAIL` |
+| Listar correos | `OUTLOOK_LIST_MESSAGES` |
+| Crear borrador | `OUTLOOK_CREATE_DRAFT_MESSAGE` |
+
+---
+
+## Productividad & Gestión de tareas
+
+### Notion (`NOTION`)
+| Acción | Slug |
+|--------|------|
+| Crear página | `NOTION_CREATE_NOTION_PAGE` |
+| Actualizar página | `NOTION_UPDATE_PAGE` |
+| Archivar página | `NOTION_ARCHIVE_NOTION_PAGE` |
+| Obtener página | `NOTION_RETRIEVE_PAGE` |
+| Buscar página | `NOTION_SEARCH_NOTION_PAGE` |
+| Obtener página en markdown | `NOTION_GET_PAGE_MARKDOWN` |
+| Duplicar página | `NOTION_DUPLICATE_PAGE` |
+| Mover página | `NOTION_MOVE_PAGE` |
+| Agregar contenido | `NOTION_ADD_PAGE_CONTENT` |
+| Agregar múltiple contenido | `NOTION_ADD_MULTIPLE_PAGE_CONTENT` |
+| Reemplazar contenido | `NOTION_REPLACE_PAGE_CONTENT` |
+| Crear base de datos | `NOTION_CREATE_DATABASE` |
+| Obtener base de datos | `NOTION_FETCH_DATABASE` |
+| Insertar fila | `NOTION_INSERT_ROW_DATABASE` |
+| Actualizar fila | `NOTION_UPDATE_ROW_DATABASE` |
+| Obtener fila | `NOTION_FETCH_ROW` |
+| Consultar base de datos | `NOTION_QUERY_DATABASE` |
+| Consultar con filtro | `NOTION_QUERY_DATABASE_WITH_FILTER` |
+| Crear comentario | `NOTION_CREATE_COMMENT` |
+| Listar usuarios | `NOTION_LIST_USERS` |
+
+### Linear (`LINEAR`)
+| Acción | Slug |
+|--------|------|
+| Crear issue | `LINEAR_CREATE_LINEAR_ISSUE` |
+| Actualizar issue | `LINEAR_UPDATE_ISSUE` |
+| Eliminar issue | `LINEAR_DELETE_LINEAR_ISSUE` |
+| Obtener issue | `LINEAR_GET_LINEAR_ISSUE` |
+| Buscar issues | `LINEAR_SEARCH_ISSUES` |
+| Listar issues | `LINEAR_LIST_LINEAR_ISSUES` |
+| Listar issues por equipo | `LINEAR_LIST_ISSUES_BY_TEAM_ID` |
+| Crear proyecto | `LINEAR_CREATE_LINEAR_PROJECT` |
+| Actualizar proyecto | `LINEAR_UPDATE_LINEAR_PROJECT` |
+| Archivar proyecto | `LINEAR_ARCHIVE_PROJECT` |
+| Obtener proyecto | `LINEAR_GET_LINEAR_PROJECT` |
+| Listar proyectos | `LINEAR_LIST_LINEAR_PROJECTS` |
+| Crear comentario | `LINEAR_CREATE_LINEAR_COMMENT` |
+| Listar comentarios | `LINEAR_LIST_COMMENTS` |
+| Crear label | `LINEAR_CREATE_LINEAR_LABEL` |
+| Listar labels | `LINEAR_LIST_LINEAR_LABELS` |
+| Listar equipos | `LINEAR_LIST_LINEAR_TEAMS` |
+| Obtener usuario actual | `LINEAR_GET_CURRENT_USER` |
+| Listar usuarios | `LINEAR_LIST_LINEAR_USERS` |
+| Listar estados | `LINEAR_LIST_LINEAR_STATES` |
+| Crear milestone | `LINEAR_CREATE_PROJECT_MILESTONE` |
+
+### Jira (`JIRA`)
+| Acción | Slug |
+|--------|------|
+| Crear issue | `JIRA_CREATE_ISSUE` |
+| Obtener issue | `JIRA_GET_ISSUE` |
+| Editar issue | `JIRA_EDIT_ISSUE` |
+| Eliminar issue | `JIRA_DELETE_ISSUE` |
+| Asignar issue | `JIRA_ASSIGN_ISSUE` |
+| Crear bulk de issues | `JIRA_BULK_CREATE_ISSUE` |
+| Agregar comentario | `JIRA_ADD_COMMENT` |
+| Eliminar comentario | `JIRA_DELETE_COMMENT` |
+| Agregar adjunto | `JIRA_ADD_ATTACHMENT` |
+| Crear sprint | `JIRA_CREATE_SPRINT` |
+| Crear proyecto | `JIRA_CREATE_PROJECT` |
+| Obtener proyecto | `JIRA_GET_PROJECT` |
+| Listar proyectos | `JIRA_GET_ALL_PROJECTS` |
+| Crear board | `JIRA_CREATE_BOARD` |
+| Obtener issues por JQL | `JIRA_FETCH_BULK_ISSUES` |
+| Buscar usuarios | `JIRA_FIND_USERS` |
+| Agregar watcher | `JIRA_ADD_WATCHER_TO_ISSUE` |
+| Agregar worklog | `JIRA_ADD_WORKLOG` |
+| Obtener campos | `JIRA_GET_FIELDS` |
+| Listar tipos de issue | `JIRA_GET_ISSUE_TYPES` |
+
+### Asana (`ASANA`)
+| Acción | Slug |
+|--------|------|
+| Crear tarea | `ASANA_CREATE_TASK` |
+| Actualizar tarea | `ASANA_UPDATE_TASK` |
+| Obtener tarea | `ASANA_GET_TASK` |
+| Listar tareas | `ASANA_GET_TASKS_FROM_A_PROJECT` |
+| Crear proyecto | `ASANA_CREATE_PROJECT` |
+| Listar proyectos | `ASANA_GET_PROJECTS` |
+
+### Trello (`TRELLO`)
+| Acción | Slug |
+|--------|------|
+| Crear tarjeta | `TRELLO_CREATE_CARD` |
+| Actualizar tarjeta | `TRELLO_UPDATE_CARD` |
+| Crear tablero | `TRELLO_CREATE_BOARD` |
+| Listar tableros | `TRELLO_LIST_BOARDS` |
+
+### ClickUp (`CLICKUP`)
+| Acción | Slug |
+|--------|------|
+| Crear tarea | `CLICKUP_CREATE_TASK` |
+| Actualizar tarea | `CLICKUP_UPDATE_TASK` |
+| Listar tareas | `CLICKUP_GET_TASKS` |
+
+### Monday (`MONDAY`)
+| Acción | Slug |
+|--------|------|
+| Crear item | `MONDAY_CREATE_ITEM` |
+| Actualizar item | `MONDAY_CHANGE_COLUMN_VALUE` |
+| Listar boards | `MONDAY_GET_BOARDS` |
+
+---
+
+## Calendario
+
+### Google Calendar (`GOOGLECALENDAR`)
+| Acción | Slug |
+|--------|------|
+| Crear evento | `GOOGLECALENDAR_CREATE_EVENT` |
+| Actualizar evento | `GOOGLECALENDAR_UPDATE_EVENT` |
+| Eliminar evento | `GOOGLECALENDAR_DELETE_EVENT` |
+| Obtener evento | `GOOGLECALENDAR_EVENTS_GET` |
+| Listar eventos | `GOOGLECALENDAR_EVENTS_LIST` |
+| Listar todos los calendarios | `GOOGLECALENDAR_EVENTS_LIST_ALL_CALENDARS` |
+| Buscar evento | `GOOGLECALENDAR_FIND_EVENT` |
+| Encontrar horarios libres | `GOOGLECALENDAR_FIND_FREE_SLOTS` |
+| Crear calendario | `GOOGLECALENDAR_CREATE_CALENDAR` |
+| Listar calendarios | `GOOGLECALENDAR_LIST_CALENDARS` |
+| Obtener fecha/hora actual | `GOOGLECALENDAR_GET_CURRENT_DATE_TIME` |
+| Sincronizar eventos | `GOOGLECALENDAR_SYNC_EVENTS` |
+| Quick add (texto natural) | `GOOGLECALENDAR_QUICK_ADD` |
+| Mover evento | `GOOGLECALENDAR_EVENTS_MOVE` |
+| Quitar asistente | `GOOGLECALENDAR_REMOVE_ATTENDEE` |
+
+### Calendly (`CALENDLY`)
+| Acción | Slug |
+|--------|------|
+| Listar tipos de evento | `CALENDLY_LIST_EVENT_TYPES` |
+| Obtener usuario actual | `CALENDLY_GET_CURRENT_USER` |
+
+---
+
+## Almacenamiento & Archivos
+
+### Google Drive (`GOOGLEDRIVE`)
+| Acción | Slug |
+|--------|------|
+| Crear archivo | `GOOGLEDRIVE_CREATE_FILE` |
+| Crear archivo desde texto | `GOOGLEDRIVE_CREATE_FILE_FROM_TEXT` |
+| Editar archivo | `GOOGLEDRIVE_EDIT_FILE` |
+| Copiar archivo | `GOOGLEDRIVE_COPY_FILE` |
+| Descargar archivo | `GOOGLEDRIVE_DOWNLOAD_FILE` |
+| Exportar archivo de Google Workspace | `GOOGLEDRIVE_EXPORT_GOOGLE_WORKSPACE_FILE` |
+| Buscar archivo | `GOOGLEDRIVE_FIND_FILE` |
+| Buscar carpeta | `GOOGLEDRIVE_FIND_FOLDER` |
+| Obtener metadata | `GOOGLEDRIVE_GET_FILE_METADATA` |
+| Crear carpeta | `GOOGLEDRIVE_CREATE_FOLDER` |
+| Eliminar archivo | `GOOGLEDRIVE_DELETE_FILE` |
+| Mover archivo | `GOOGLEDRIVE_ADD_PARENT` |
+| Compartir archivo | `GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE` |
+| Crear permiso | `GOOGLEDRIVE_CREATE_PERMISSION` |
+| Eliminar permiso | `GOOGLEDRIVE_DELETE_PERMISSION` |
+| Crear comentario | `GOOGLEDRIVE_CREATE_COMMENT` |
+| Vaciar papelera | `GOOGLEDRIVE_EMPTY_TRASH` |
+| Crear acceso directo | `GOOGLEDRIVE_CREATE_SHORTCUT_TO_FILE` |
+| Listar revisiones | `GOOGLEDRIVE_GET_REVISION` |
+
+### Dropbox (`DROPBOX`)
+| Acción | Slug |
+|--------|------|
+| Subir archivo | `DROPBOX_UPLOAD_FILE` |
+| Descargar archivo | `DROPBOX_DOWNLOAD_FILE` |
+| Listar carpeta | `DROPBOX_LIST_FOLDER` |
+
+### OneDrive (`ONE_DRIVE`)
+| Acción | Slug |
+|--------|------|
+| Listar archivos | `ONE_DRIVE_LIST_CHILDREN` |
+| Obtener archivo | `ONE_DRIVE_GET_DRIVE_ITEM` |
+
+### Box (`BOX`)
+| Acción | Slug |
+|--------|------|
+| Subir archivo | `BOX_UPLOAD_FILE` |
+| Listar carpeta | `BOX_LIST_FOLDER_ITEMS` |
+
+---
+
+## Hojas de cálculo
+
+### Google Sheets (`GOOGLESHEETS`)
+| Acción | Slug |
+|--------|------|
+| Crear hoja | `GOOGLESHEETS_CREATE_SPREADSHEET` |
+| Leer rango | `GOOGLESHEETS_GET_SPREADSHEET_DATA` |
+| Escribir en celda | `GOOGLESHEETS_UPDATE_SPREADSHEET_DATA` |
+| Agregar fila | `GOOGLESHEETS_BATCH_UPDATE` |
+| Crear hoja en spreadsheet | `GOOGLESHEETS_CREATE_GOOGLE_SHEET` |
+
+### Airtable (`AIRTABLE`)
+| Acción | Slug |
+|--------|------|
+| Listar registros | `AIRTABLE_LIST_RECORDS` |
+| Crear registro | `AIRTABLE_CREATE_RECORDS` |
+| Actualizar registro | `AIRTABLE_UPDATE_RECORD` |
+| Eliminar registro | `AIRTABLE_DELETE_RECORD` |
+
+---
+
+## CRM & Ventas
+
+### HubSpot (`HUBSPOT`)
+| Acción | Slug |
+|--------|------|
+| Crear contacto | `HUBSPOT_CREATE_CONTACT` |
+| Archivar contacto | `HUBSPOT_ARCHIVE_CONTACT` |
+| Crear empresa | `HUBSPOT_CREATE_COMPANY` |
+| Archivar empresa | `HUBSPOT_ARCHIVE_COMPANY` |
+| Crear deal | `HUBSPOT_CREATE_DEAL` |
+| Archivar deal | `HUBSPOT_ARCHIVE_DEALS` |
+| Crear ticket | `HUBSPOT_CREATE_FEEDBACK_SUBMISSION` |
+| Crear email | `HUBSPOT_CREATE_EMAIL` |
+| Crear meeting | `HUBSPOT_CREATE_MEETING` |
+| Crear campaña | `HUBSPOT_CREATE_CAMPAIGN` |
+| Crear asociación | `HUBSPOT_CREATE_ASSOCIATION` |
+
+### Salesforce (`SALESFORCE`)
+| Acción | Slug |
+|--------|------|
+| Crear lead | `SALESFORCE_CREATE_LEAD` |
+| Crear contacto | `SALESFORCE_CREATE_CONTACT` |
+| Crear oportunidad | `SALESFORCE_CREATE_OPPORTUNITY` |
+| Buscar registros | `SALESFORCE_SOQL_QUERY` |
+
+### Pipedrive (`PIPEDRIVE`)
+| Acción | Slug |
+|--------|------|
+| Crear deal | `PIPEDRIVE_ADD_DEAL` |
+| Actualizar deal | `PIPEDRIVE_UPDATE_DEAL` |
+| Crear persona | `PIPEDRIVE_ADD_PERSON` |
+| Crear organización | `PIPEDRIVE_ADD_ORGANIZATION` |
+
+### Zendesk (`ZENDESK`)
+| Acción | Slug |
+|--------|------|
+| Crear ticket | `ZENDESK_CREATE_TICKET` |
+| Actualizar ticket | `ZENDESK_UPDATE_TICKET` |
+| Listar tickets | `ZENDESK_LIST_TICKETS` |
+
+---
+
+## Finanzas & Pagos
+
+### Stripe (`STRIPE`)
+| Acción | Slug |
+|--------|------|
+| Crear cliente | `STRIPE_CREATE_CUSTOMER` |
+| Crear payment intent | `STRIPE_CREATE_PAYMENT_INTENT` |
+| Cancelar payment intent | `STRIPE_CANCEL_PAYMENT_INTENT` |
+| Confirmar payment intent | `STRIPE_CONFIRM_PAYMENT_INTENT` |
+| Capturar cargo | `STRIPE_CAPTURE_CHARGE` |
+| Crear cargo | `STRIPE_CREATE_CHARGE` |
+| Crear reembolso de cargo | `STRIPE_CREATE_CHARGE_REFUND` |
+| Crear suscripción | `STRIPE_CREATE_CUSTOMER_SUBSCRIPTION` |
+| Cancelar suscripción | `STRIPE_CANCEL_SUBSCRIPTION` |
+| Crear factura | `STRIPE_CREATE_INVOICE` |
+| Crear link de pago | `STRIPE_CREATE_PAYMENT_LINK` |
+| Crear sesión de checkout | `STRIPE_CREATE_CHECKOUT_SESSION` |
+| Crear cupón | `STRIPE_CREATE_COUPON` |
+| Crear producto | `STRIPE_CREATE_PRODUCT` |
+| Crear precio | `STRIPE_CREATE_PRICE` |
+| Crear nota de crédito | `STRIPE_CREATE_CREDIT_NOTE` |
+| Aceptar cotización | `STRIPE_ACCEPT_QUOTE` |
+| Cancelar cotización | `STRIPE_CANCEL_QUOTE` |
+| Crear método de pago | `STRIPE_CREATE_PAYMENT_METHOD` |
+| Adjuntar método de pago | `STRIPE_ATTACH_PAYMENT_METHOD` |
+| Crear billing portal | `STRIPE_CREATE_BILLING_PORTAL_SESSION` |
+
+### PayPal (`PAYPAL`)
+| Acción | Slug |
+|--------|------|
+| Crear orden | `PAYPAL_CREATE_ORDER` |
+| Capturar pago | `PAYPAL_CAPTURE_PAYMENT_FOR_ORDER` |
+
+### QuickBooks (`QUICKBOOKS`)
+| Acción | Slug |
+|--------|------|
+| Crear factura | `QUICKBOOKS_CREATE_INVOICE` |
+| Crear cliente | `QUICKBOOKS_CREATE_CUSTOMER` |
+| Crear pago | `QUICKBOOKS_CREATE_PAYMENT` |
+
+---
+
+## E-commerce
+
+### Shopify (`SHOPIFY`)
+| Acción | Slug |
+|--------|------|
+| Crear producto | `SHOPIFY_CREATE_PRODUCT` |
+| Actualizar producto | `SHOPIFY_UPDATE_PRODUCT` |
+| Listar productos | `SHOPIFY_RETRIEVE_ALL_PRODUCTS` |
+| Crear orden | `SHOPIFY_CREATE_ORDER` |
+| Listar órdenes | `SHOPIFY_RETRIEVE_ALL_ORDERS` |
+| Crear cliente | `SHOPIFY_CREATE_CUSTOMER` |
+| Crear descuento | `SHOPIFY_CREATE_DISCOUNT_CODE` |
+
+### Square (`SQUARE`)
+| Acción | Slug |
+|--------|------|
+| Crear pago | `SQUARE_CREATE_PAYMENT` |
+| Listar catálogo | `SQUARE_LIST_CATALOG` |
+
+---
+
+## Diseño & Contenido
+
+### Figma (`FIGMA`)
+| Acción | Slug |
+|--------|------|
+| Obtener archivo | `FIGMA_GET_FILES` |
+| Listar proyectos | `FIGMA_GET_PROJECTS` |
+| Obtener comentarios | `FIGMA_GET_COMMENTS` |
+| Crear comentario | `FIGMA_POST_COMMENTS` |
+
+### Canva (`CANVA`)
+| Acción | Slug |
+|--------|------|
+| Listar diseños | `CANVA_LIST_DESIGNS` |
+| Crear diseño | `CANVA_CREATE_DESIGN` |
+| Exportar diseño | `CANVA_CREATE_DESIGN_EXPORT_JOB` |
+
+### Webflow (`WEBFLOW`)
+| Acción | Slug |
+|--------|------|
+| Listar sitios | `WEBFLOW_LIST_SITES` |
+| Listar colecciones | `WEBFLOW_LIST_COLLECTIONS` |
+| Crear item | `WEBFLOW_CREATE_COLLECTION_ITEM` |
+
+### Miro (`MIRO`)
+| Acción | Slug |
+|--------|------|
+| Crear board | `MIRO_CREATE_BOARD` |
+| Crear sticky note | `MIRO_CREATE_STICKY_NOTE_ITEM` |
+| Listar boards | `MIRO_GET_BOARDS` |
+
+---
+
+## Video & Multimedia
+
+### YouTube (`YOUTUBE`)
+| Acción | Slug |
+|--------|------|
+| Buscar videos | `YOUTUBE_SEARCH_LIST` |
+| Obtener info de video | `YOUTUBE_VIDEOS_LIST` |
+| Listar playlists | `YOUTUBE_PLAYLISTS_LIST` |
+| Crear playlist | `YOUTUBE_PLAYLISTS_INSERT` |
+
+### HeyGen (`HEYGEN`)
+| Acción | Slug |
+|--------|------|
+| Crear video | `HEYGEN_CREATE_VIDEO` |
+| Obtener estado de video | `HEYGEN_GET_VIDEO_STATUS` |
+| Listar avatares | `HEYGEN_LIST_AVATARS` |
+
+### Spotify (`SPOTIFY`)
+| Acción | Slug |
+|--------|------|
+| Buscar tracks | `SPOTIFY_SEARCH` |
+| Obtener track | `SPOTIFY_GET_TRACK` |
+| Obtener playlist | `SPOTIFY_GET_PLAYLIST` |
+| Crear playlist | `SPOTIFY_CREATE_PLAYLIST` |
+| Reproducir | `SPOTIFY_START_USERS_PLAYBACK` |
+
+---
+
+## IA & Machine Learning
+
+### OpenAI (`OPENAI`)
+| Acción | Slug |
+|--------|------|
+| Crear completion | `OPENAI_CREATE_CHAT_COMPLETION` |
+| Crear embedding | `OPENAI_CREATE_EMBEDDINGS` |
+| Generar imagen | `OPENAI_CREATE_IMAGE` |
+| Transcribir audio | `OPENAI_CREATE_TRANSCRIPTION` |
+
+### Hugging Face (`HUGGING_FACE`)
+| Acción | Slug |
+|--------|------|
+| Inferencia de texto | `HUGGING_FACE_TEXT_GENERATION` |
+| Listar modelos | `HUGGING_FACE_LIST_MODELS` |
+
+### Replicate (`REPLICATE`)
+| Acción | Slug |
+|--------|------|
+| Crear predicción | `REPLICATE_CREATE_PREDICTION` |
+| Obtener predicción | `REPLICATE_GET_PREDICTION` |
+
+---
+
+## Base de datos & Backend
+
+### Supabase (`SUPABASE`)
+| Acción | Slug |
+|--------|------|
+| Insertar fila | `SUPABASE_INSERT_ROW` |
+| Actualizar fila | `SUPABASE_UPDATE_ROWS` |
+| Eliminar fila | `SUPABASE_DELETE_ROWS` |
+| Buscar filas | `SUPABASE_FETCH_ROWS` |
+| Crear tabla | `SUPABASE_CREATE_TABLE` |
+| Ejecutar SQL | `SUPABASE_RUN_SQL_QUERY` |
+
+---
+
+## HR & Reclutamiento
+
+### BambooHR (`BAMBOOHR`)
+| Acción | Slug |
+|--------|------|
+| Obtener empleado | `BAMBOOHR_GET_EMPLOYEE` |
+| Listar empleados | `BAMBOOHR_GET_EMPLOYEES` |
+| Actualizar empleado | `BAMBOOHR_UPDATE_EMPLOYEE` |
+
+### Greenhouse (`GREENHOUSE`)
+| Acción | Slug |
+|--------|------|
+| Listar candidatos | `GREENHOUSE_LIST_CANDIDATES` |
+| Crear candidato | `GREENHOUSE_CREATE_CANDIDATE` |
+| Listar job postings | `GREENHOUSE_LIST_JOB_OPENINGS` |
+
+---
+
+## Monitoreo & Observabilidad
+
+### Sentry (`SENTRY`)
+| Acción | Slug |
+|--------|------|
+| Listar issues | `SENTRY_LIST_ORGANIZATION_ISSUES` |
+| Obtener issue | `SENTRY_GET_ISSUE` |
+| Resolver issue | `SENTRY_UPDATE_AN_ISSUE` |
+| Listar proyectos | `SENTRY_LIST_ORGANIZATION_PROJECTS` |
+
+### PagerDuty (`PAGERDUTY`)
+| Acción | Slug |
+|--------|------|
+| Crear incidente | `PAGERDUTY_CREATE_INCIDENT` |
+| Resolver incidente | `PAGERDUTY_MANAGE_INCIDENTS` |
+| Listar incidentes | `PAGERDUTY_LIST_INCIDENTS` |
+
+### Datadog (`DATADOG`)
+| Acción | Slug |
+|--------|------|
+| Listar métricas | `DATADOG_LIST_ACTIVE_METRICS` |
+| Crear monitor | `DATADOG_CREATE_A_MONITOR` |
+| Obtener logs | `DATADOG_LIST_LOGS` |
+
+---
+
+## Marketing & Email masivo
+
+### Mailchimp (`MAILCHIMP`)
+| Acción | Slug |
+|--------|------|
+| Agregar suscriptor | `MAILCHIMP_ADD_MEMBER_TO_LIST` |
+| Crear campaña | `MAILCHIMP_CREATE_CAMPAIGN` |
+| Enviar campaña | `MAILCHIMP_SEND_CAMPAIGN` |
+| Listar audiences | `MAILCHIMP_GET_ALL_LISTS` |
+
+### SendGrid (`SENDGRID`)
+| Acción | Slug |
+|--------|------|
+| Enviar email | `SENDGRID_SEND_EMAIL` |
+| Crear contacto | `SENDGRID_ADD_OR_UPDATE_A_CONTACT` |
+| Listar contactos | `SENDGRID_GET_CONTACTS` |
+
+---
+
+## Documentos & Firmas
+
+### DocuSign (`DOCUSIGN`)
+| Acción | Slug |
+|--------|------|
+| Crear sobre | `DOCUSIGN_CREATE_ENVELOPE` |
+| Enviar sobre | `DOCUSIGN_SEND_ENVELOPE` |
+| Obtener estado | `DOCUSIGN_GET_ENVELOPE` |
+
+### PandaDoc (`PANDADOC`)
+| Acción | Slug |
+|--------|------|
+| Crear documento | `PANDADOC_CREATE_DOCUMENT` |
+| Enviar documento | `PANDADOC_SEND_DOCUMENT` |
+| Obtener estado | `PANDADOC_DOCUMENT_STATUS` |
+
+---
+
+## Otros servicios populares
+
+| Servicio | Slug del servicio | Acciones clave |
+|----------|------------------|----------------|
+| Zoom | `ZOOM` | `ZOOM_CREATE_MEETING`, `ZOOM_LIST_MEETINGS` |
+| Twilio | `TWILIO` | `TWILIO_SEND_SMS`, `TWILIO_MAKE_CALL` |
+| Intercom | `INTERCOM` | `INTERCOM_CREATE_CONTACT`, `INTERCOM_SEND_MESSAGE` |
+| Cal.com | `CAL` | `CAL_GET_BUSY_TIMES`, `CAL_CREATE_BOOKING` |
+| Coda | `CODA` | `CODA_INSERT_ROWS`, `CODA_LIST_DOCS` |
+| Make | `MAKE` | `MAKE_RUN_SCENARIO` |
+| PostHog | `POSTHOG` | `POSTHOG_CAPTURE_EVENT`, `POSTHOG_CREATE_ACTION` |
+| Mixpanel | `MIXPANEL` | `MIXPANEL_TRACK_EVENT` |
+| Amplitude | `AMPLITUDE` | `AMPLITUDE_CREATE_EVENT` |
+
+---
+
+## Lista completa de servicios por categoría
+
+Composio soporta **1.052 servicios** en total. Abajo están todos los slugs de servicios agrupados por categoría.
+
+### CRM & Ventas
+`HUBSPOT` · `SALESFORCE` · `PIPEDRIVE` · `ACTIVE_CAMPAIGN` · `INTERCOM` · `ZENDESK` · `GORGIAS` · `KOMMO` · `NUTSHELL` · `ZOHO` · `CAPSULE_CRM` · `CLOSE`
+
+### Comunicación
+`SLACK` · `DISCORD` · `MICROSOFT_TEAMS` · `TELEGRAM` · `WHATSAPP` · `TWILIO`
+
+### Email & Marketing
+`GMAIL` · `OUTLOOK` · `MAILCHIMP` · `SENDGRID` · `BREVO` · `MAILERLITE` · `KLAVIYO` · `CONSTANT_CONTACT` · `OMNISEND` · `ITERABLE` · `ACTIVE_CAMPAIGN`
+
+### Gestión de Proyectos
+`ASANA` · `MONDAY` · `CLICKUP` · `TRELLO` · `NOTION` · `JIRA` · `LINEAR` · `BASECAMP` · `CODA`
+
+### Desarrollo & DevOps
+`GITHUB` · `GITLAB` · `BITBUCKET` · `VERCEL` · `RENDER` · `HEROKU`
+
+### Almacenamiento
+`GOOGLEDRIVE` · `DROPBOX` · `ONE_DRIVE` · `BOX` · `SHARE_POINT`
+
+### Hojas de Cálculo
+`GOOGLESHEETS` · `AIRTABLE`
+
+### Calendario
+`GOOGLECALENDAR` · `OUTLOOK` · `CALENDLY` · `CAL`
+
+### Finanzas
+`STRIPE` · `PAYPAL` · `QUICKBOOKS` · `XERO` · `ZOHO_BOOKS` · `FRESHBOOKS`
+
+### E-commerce
+`SHOPIFY` · `SQUARE` · `LEMON_SQUEEZY`
+
+### Diseño & Contenido
+`FIGMA` · `CANVA` · `WEBFLOW` · `MIRO` · `PENPOT` · `CONTENTFUL`
+
+### Video & Multimedia
+`YOUTUBE` · `HEYGEN` · `SPOTIFY`
+
+### IA & ML
+`OPENAI` · `HUGGING_FACE` · `REPLICATE` · `ANTHROPIC_ADMINISTRATOR` · `DEEPSEEK` · `DATAROBOT`
+
+### Base de Datos & Backend
+`SUPABASE` · `FIREBASE` · `MONGODB` · `POSTGRESQL`
+
+### HR & Reclutamiento
+`GUSTO` · `BAMBOOHR` · `WORKDAY` · `ASHBY` · `GREENHOUSE`
+
+### Monitoreo
+`SENTRY` · `PAGERDUTY` · `DATADOG` · `GRAFANA` · `NEW_RELIC`
+
+### Documentos & Firmas
+`DOCUSIGN` · `PANDADOC` · `BOLDSIGN` · `DROPBOX_SIGN` · `DOCUMENSO`
+
+### Integración
+`MAKE` · `NANGO` · `COMPOSIO`
+
+---
+
+Para ver la lista completa de acciones de un servicio específico, visitá `https://docs.composio.dev/tools/{slug}` (en minúscula). Ejemplo: `https://docs.composio.dev/tools/github`.

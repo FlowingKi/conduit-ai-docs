@@ -58,7 +58,8 @@
           "reference/trigger-types",
           "reference/condition-operators",
           "reference/skill-format",
-          "reference/bridge-api"
+          "reference/bridge-api",
+          "reference/composio-tools"
         ]
       },
       {
