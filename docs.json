@@ -74,14 +74,14 @@
   "navbar": {
     "links": [
       {
-        "label": "conduit-ai.com",
-        "href": "https://conduit-ai.com"
+        "label": "App",
+        "href": "https://conduit-ai-prod.vercel.app"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Abrir app",
-      "href": "https://conduit-ai.com"
+      "href": "https://conduit-ai-prod.vercel.app"
     }
   },
   "footer": {
