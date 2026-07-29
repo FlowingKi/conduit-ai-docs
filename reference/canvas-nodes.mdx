@@ -1,6 +1,398 @@
 ---
-title: canvas nodes
-description: Próximamente.
+title: Nodos del canvas
+description: Referencia completa de los 19 tipos de nodo disponibles en el canvas de automatizaciones — campos, outputs y ejemplos.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Cada nodo del canvas tiene un panel de configuración que se abre al hacer clic en él. Todos los nodos tienen el campo **Nombre del nodo** (label visible en el canvas) e **Ícono / Imagen** (opcional).
+
+Las variables se referencian con `{{...}}`. Ver [Variables](/reference/variables) para la sintaxis completa.
+
+---
+
+## ⚡ Trigger
+
+El punto de entrada del flow. Solo puede haber un trigger por automatización.
+
+**Campo: Tipo de trigger**
+
+| Valor | Descripción |
+|-------|-------------|
+| `manual` | Se ejecuta haciendo clic en "Run Once" |
+| `cron` | Schedule periódico — expresión cron |
+| `webhook` | Recibe un POST HTTP desde un sistema externo |
+| `composio_trigger` | Evento de un servicio conectado via Composio |
+| `file_watch` | Detecta cambios en una ruta local (requiere bridge) |
+| `agent` | Activado por otro agente del equipo |
+| `service_event` | Evento genérico de servicio (avanzado) |
+| `data_change` | Cambio en una tabla de Supabase |
+| `api` | Llamado desde la API pública de Conduit AI |
+
+**Campos según tipo:**
+
+- **cron**: expresión cron (`0 9 * * 1` = lunes 9am UTC)
+- **webhook**: URL autogenerada `/api/webhooks/{id}` — hacé clic en "Generar"
+- **composio_trigger**: toolkit slug (ej: `github`) + evento (se cargan automáticamente si el servicio está conectado)
+- **file_watch**: ruta a observar + evento (`create`, `modify`, `delete`)
+- **agent**: agente que puede delegar (o "cualquier agente")
+- **data_change**: tabla + condición opcional (ej: `status = "completed"`)
+
+**Payload de prueba (Run Once)**: JSON que simula el payload del trigger al ejecutar manualmente. Queda disponible como `{{trigger._payload}}`.
+
+---
+
+## 🤖 Agent
+
+Ejecuta un agente de tu equipo con una tarea específica.
+
+| Campo | Descripción |
+|-------|-------------|
+| Agente | Qué agente ejecuta el paso |
+| Tarea / Instrucción | Qué debe hacer — soporta `{{variables}}` |
+| Fuentes de input | Datos que se inyectan al contexto (ver abajo) |
+| Modelo (opcional) | Sobreescribe el modelo del agente para este paso |
+| Output schema | Define campos estructurados en el output |
+| Timeout | Segundos máximos de espera (30–300, default 120) |
+
+**Fuentes de input** — cuatro tipos:
+- `Output de step` — resultado de un nodo anterior
+- `Herramienta MCP` — output de una tool
+- `Texto fijo` — texto que se inyecta como contexto
+- `Datos del trigger` — payload del evento que inició el flow
+
+**Output schema** — cuando definís campos con nombre y tipo, quedan accesibles como `{{outputs.NODO_ID.campo}}` en nodos downstream.
+
+**Output por defecto**: `{{outputs.NODO_ID.output}}` (texto completo de la respuesta)
+
+**Ejemplo:**
+```
+Tarea: Resumí estos PRs en bullet points:
+{{trigger._payload.prs}}
+
+Fuente: Datos del trigger
+```
+
+---
+
+## 📋 Instruction
+
+Inyecta texto al contexto del agente siguiente, antes de que procese su tarea.
+
+| Campo | Descripción |
+|-------|-------------|
+| Instrucción / Regla | Texto que se inyecta (puede ser reglas, restricciones, contexto) |
+| Agente receptor | Auto (detecta el agente downstream) o específico |
+
+<Note>
+A diferencia del campo "Tarea" del nodo Agent, la Instruction no genera una respuesta — solo modifica el contexto. Es útil para inyectar reglas condicionales o contexto variable.
+</Note>
+
+**Ejemplo:**
+```
+Responder en español con no más de 3 bullet points.
+El cliente es: {{trigger._payload.client_name}}
+```
+
+---
+
+## 🔀 Condition
+
+Bifurca el flow según una condición. Genera dos salidas: `verdadero` y `falso`.
+
+**Modo visual** — hasta 3 condiciones combinadas con AND/OR:
+
+| Operador | Descripción |
+|----------|-------------|
+| `equals` | Igual a |
+| `not_equals` | Distinto de |
+| `contains` | Contiene texto |
+| `not_contains` | No contiene texto |
+| `starts_with` | Empieza con |
+| `ends_with` | Termina con |
+| `greater_than` | Mayor que (numérico) |
+| `less_than` | Menor que (numérico) |
+| `exists` | El campo existe |
+| `not_exists` | El campo no existe |
+| `is_true` | Es verdadero (boolean) |
+| `is_false` | Es falso (boolean) |
+
+**Modo avanzado** — expresión libre con variables:
+```
+{{outputs.agent1.output}} contains "error"
+```
+
+<Note>
+Conectá dos edges desde este nodo y etiquetá uno como **verdadero** y otro como **falso**.
+</Note>
+
+---
+
+## 🔁 Loop
+
+Repite un conjunto de nodos sobre una lista o mientras se cumple una condición.
+
+| Campo | Descripción |
+|-------|-------------|
+| Tipo | `for-each` (itera lista) o `while` (hasta condición) |
+| Lista a iterar | Expresión que devuelve un array (for-each) |
+| Condición de repetición | Se repite mientras sea verdadero (while) |
+| Máx. iteraciones | Límite obligatorio para evitar loops infinitos |
+| Ejecución | `secuencial` o `paralelo` (con máx. simultáneos) |
+
+**Ejemplo for-each:**
+```
+Lista: {{outputs.s1.issues}}
+Máx. iteraciones: 20
+```
+
+---
+
+## 📤 Output
+
+Guarda o envía el resultado del flow a un destino externo.
+
+| Destino | Campo adicional |
+|---------|----------------|
+| `Slack` | Canal (ej: `#updates`) |
+| `Email` | Dirección de email |
+| `Obsidian` | Ruta en vault (ej: `/Reports/`) |
+| `Webhook` | URL del webhook |
+| `Google Drive` | Carpeta (ej: `/Reports`) |
+| `Brain / Memoria` | Etiqueta opcional |
+| `Sin output externo` | El resultado queda solo en el historial |
+
+---
+
+## 🔧 Tool
+
+Ejecuta una tool de Composio directamente, sin pasar por un agente.
+
+| Campo | Descripción |
+|-------|-------------|
+| Tool slug | Slug exacto de la tool (ej: `GMAIL_SEND_EMAIL`) |
+| Argumentos | Campos dinámicos (se cargan al ingresar el slug) |
+
+Cuando ingresás el slug, el panel carga automáticamente los parámetros de la tool con sus tipos y si son requeridos.
+
+**Output:** `{{outputs.NODO_ID.output}}`
+
+**Ejemplo:**
+```
+Tool: SLACK_SENDS_A_MESSAGE
+channel: #alertas
+text: {{outputs.agent.output}}
+```
+
+---
+
+## 📦 Subflow
+
+Ejecuta otra automatización completa como sub-proceso.
+
+| Campo | Descripción |
+|-------|-------------|
+| Automatización | Qué flow ejecutar |
+| Parámetros de entrada | Mapeos nombre_param → expresión de variable |
+
+Los parámetros pasados al subflow están disponibles dentro de él como `{{variables.nombre_param}}`.
+
+---
+
+## 💬 Note
+
+Anotación visual en el canvas. No afecta la ejecución del flow.
+
+| Campo | Descripción |
+|-------|-------------|
+| Nota | Texto libre — para documentar el flow o dejar comentarios |
+
+---
+
+## 🌐 HTTP Request
+
+Hace un llamado HTTP a una URL externa.
+
+| Campo | Opciones |
+|-------|---------|
+| Método | GET, POST, PUT, PATCH, DELETE |
+| URL | Soporta `{{variables}}` |
+| Headers | Lista de clave/valor |
+| Body | Sin body, JSON, Form data, Raw text |
+| Auth | Sin auth, Bearer Token, Basic Auth, API Key (header) |
+
+**Output:**
+```
+{{outputs.NODO_ID.status}}   # código HTTP (200, 404, etc.)
+{{outputs.NODO_ID.body}}     # cuerpo de la respuesta
+{{outputs.NODO_ID.ok}}       # true si status 2xx
+```
+
+---
+
+## 🚦 Filter
+
+Filtra el flow según condiciones. Si los datos no cumplen el filtro, el flow se detiene.
+
+Los operadores son los mismos que en el nodo Condition. Se pueden combinar hasta 3 condiciones con AND/OR.
+
+| Campo | Opciones |
+|-------|---------|
+| Si no pasa el filtro | `Detener el flow` o `Detener + notificar` |
+| Canal de notificación | Canal de Slack (solo si "Detener + notificar") |
+
+---
+
+## 📦 Set Variables
+
+Define variables reutilizables accesibles en cualquier nodo downstream.
+
+| Campo | Descripción |
+|-------|-------------|
+| Variables | Lista de nombre / expresión |
+
+Las expresiones soportan variables upstream. El valor puede ser texto, número, o una expresión `{{...}}`.
+
+**Output:** `{{outputs.NODO_ID.nombreVariable}}` por cada variable definida.
+
+**Ejemplo:**
+```
+fecha_hoy  →  {{trigger.timestamp | date:"DD/MM/YYYY"}}
+cliente    →  {{trigger._payload.client_name}}
+```
+
+---
+
+## 🔀 Router
+
+Enruta el flow hacia diferentes ramas según el valor de un campo.
+
+| Campo | Descripción |
+|-------|-------------|
+| Campo a evaluar | Expresión con variables (ej: `{{trigger._payload.type}}`) |
+| Ramas | Hasta 5 ramas con condición de valor + rama Default |
+
+Cada rama tiene un **nombre** y una **condición** (valor exacto o texto que contiene). La rama **Default** se activa cuando ninguna rama anterior coincide.
+
+---
+
+## 🔄 Data Transformer
+
+Transforma y reformatea datos de entrada en un nuevo shape.
+
+**Modo visual** — lista de mappings:
+
+| Campo | Descripción |
+|-------|-------------|
+| Origen | Variable del nodo anterior |
+| Destino | Nombre del campo en el output |
+| Transform | Transformación a aplicar |
+
+Transformaciones disponibles: `rename`, `to_uppercase`, `to_lowercase`, `trim`, `to_number`, `to_string`, `format_date`, `extract_regex`, `concatenate`, `json_path`, `template`
+
+**Modo JSON** — template libre con `{{variables}}`.
+
+**Output:** `{{outputs.NODO_ID.CAMPO}}` por cada mapping definido.
+
+---
+
+## ⏱ Delay
+
+Pausa la ejecución del flow.
+
+| Campo | Opciones |
+|-------|---------|
+| Tipo | `Tiempo fijo` o `Hasta fecha/hora` |
+| Duración | Número + unidad (segundos, minutos, horas, días) |
+| Fecha/hora | Datetime UTC (si tipo = "Hasta fecha/hora") |
+
+<Warning>
+En ejecuciones manuales (Run Once), los delays se capan a 5 minutos.
+</Warning>
+
+---
+
+## 🔢 Iterator
+
+Itera sobre un array con control explícito por ítem.
+
+| Campo | Descripción |
+|-------|-------------|
+| Array a iterar | Expresión que devuelve un array |
+| Variable del ítem | Nombre de acceso en el body (default: `item`) |
+| Variable del índice | Nombre del índice (default: `index`) |
+
+**Variables disponibles en el body del iterator:**
+```
+{{iterator.item}}    # ítem actual
+{{iterator.index}}   # posición (0-based)
+{{iterator.total}}   # total de ítems
+```
+
+**Edges:** conectar edge `iterando` → body del loop, edge `completado` → siguiente nodo (típicamente Aggregator).
+
+---
+
+## 🗂 Aggregator
+
+Acumula resultados de múltiples iteraciones o ramas.
+
+| Modo | Output disponible |
+|------|-----------------|
+| `Array` | `{{outputs.ID.results}}` — array de todos los outputs |
+| `Texto concatenado` | `{{outputs.ID.joined}}` — string unido con separador |
+| `Contador` | `{{outputs.ID.count}}` — número de ítems |
+| `Suma numérica` | `{{outputs.ID.sum}}` — suma de un campo numérico |
+
+En modo string y suma, podés especificar un **campo** para extraer de cada ítem (si los outputs son JSON).
+
+---
+
+## 🔗 Merge
+
+Combina múltiples ramas paralelas en una sola.
+
+| Modo | Comportamiento |
+|------|---------------|
+| `Esperar todas las ramas` | Espera que todas las ramas upstream completen |
+| `Continuar con la primera disponible` | Continúa cuando la primera rama llega |
+
+**Output:** `{{outputs.NODO_ID.RAMA_ID}}` — acceso al resultado de cada rama por ID.
+
+---
+
+## 🛡 Error Handler
+
+Captura errores de nodos upstream y define comportamiento de fallback.
+
+Para conectar: agregá un edge con label `error` desde el nodo que querés vigilar hacia el Error Handler.
+
+**Variables disponibles en el handler:**
+```
+{{error.message}}     # Mensaje de error
+{{error.node_id}}     # ID del nodo que falló
+{{error.node_label}}  # Label del nodo
+{{error.timestamp}}   # Timestamp ISO del error
+```
+
+---
+
+## 📬 Webhook Response
+
+Responde al caller del webhook con un payload customizado.
+
+| Campo | Descripción |
+|-------|-------------|
+| Status code | Código HTTP de respuesta (default 200) |
+| Body | Payload de respuesta — soporta `{{variables}}` |
+| Headers de respuesta | Headers HTTP adicionales |
+
+<Note>
+Solo funciona cuando el trigger es de tipo **webhook**. Si el trigger es de otro tipo, este nodo no tiene efecto.
+</Note>
+
+**Ejemplo:**
+```json
+{
+  "ok": true,
+  "summary": "{{outputs.agent.output}}"
+}
+```
