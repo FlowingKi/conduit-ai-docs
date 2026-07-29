@@ -1,6 +1,69 @@
 ---
 title: Memory
-description: Próximamente.
+description: Sistema de memoria persistente de Conduit AI — hechos, notas, sync con Obsidian y export.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Memory es el sistema de memoria persistente de Conduit AI. Los agentes pueden leer y escribir hechos, notas y contexto que persiste entre sesiones.
+
+## Tipos de memoria
+
+### Hechos
+
+Los hechos son piezas de información cortas y estructuradas que los agentes extraen de las conversaciones. Se guardan en la base de datos y están disponibles en todas las sesiones futuras.
+
+Ejemplos de hechos:
+- `El proyecto usa TypeScript 5.4`
+- `El usuario prefiere respuestas en español`
+- `La API de producción está en api.ejemplo.com`
+
+**Límite de hechos por workspace**: configurable (default 10). Cuando se llega al límite, los hechos más antiguos se desplazan para dar lugar a los nuevos.
+
+### Notas
+
+Las notas son documentos más largos creados por los agentes o el usuario. Se guardan en `MEMORY/notes/` dentro del vault de Obsidian (si está configurado) o en cloud.
+
+**Destilar sesión → nota**: en la pestaña Memory de un workspace, podés solicitar que el agente destile la sesión actual en una nota de resumen. La nota queda en `MEMORY/notes/`.
+
+### Contexto de sesión
+
+El contexto de sesión captura información relevante de la conversación actual para que los agentes puedan retomarlo en el futuro.
+
+## Configuración
+
+Desde **Memory** en el menú lateral o desde la pestaña **Memory** de un workspace:
+
+| Opción | Descripción |
+|--------|-------------|
+| **Storage** | `cloud` (Supabase) o `local` (vault Obsidian) |
+| **Límite de hechos** | Cuántos hechos se retienen (5, 10, 20, 50) |
+| **Retención** | Por cuánto tiempo se conservan los hechos (30d, 90d, 1 año) |
+
+## Sync con Obsidian
+
+Si tenés Obsidian con el vault de Conduit AI configurado, los hechos y notas pueden sincronizarse bidireccional. Las notas creadas vía "Destilar sesión" aparecen en `MEMORY/notes/` en Obsidian.
+
+Para configurar el sync:
+1. El bridge tiene que estar corriendo y con acceso a tu vault
+2. Configurá la ruta del vault en **Settings → Bridge**
+3. Seleccioná `local` como storage en Memory
+
+## Export de memoria
+
+Desde la pestaña Memory de un workspace, podés exportar todos los hechos del workspace a un archivo markdown. El archivo se guarda con el nombre `BRAIN/memoria-FECHA.md`.
+
+Útil para:
+- Backup antes de limpiar hechos
+- Compartir contexto con otra persona
+- Revisión manual del estado de la memoria
+
+## Triggers de memoria automática
+
+Los agentes pueden capturar hechos automáticamente según estos disparadores (configurables por workspace):
+
+| Trigger | Cuándo actúa |
+|---------|--------------|
+| Sprint | Al inicio o fin de un sprint |
+| End of day | Al cerrar el workspace al final del día |
+| Session 20% | Cuando el contexto de sesión está al 20% restante |
+| Keywords | Al detectar palabras clave específicas |
+| Interval | Cada N minutos de conversación |

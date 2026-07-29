@@ -1,6 +1,58 @@
 ---
 title: Connections
-description: Próximamente.
+description: AI Models, integraciones via Composio, API connectors y el bridge local.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Connections es donde configurás los servicios externos que usan tus agentes: modelos de IA, integraciones con apps, y la conexión al bridge local.
+
+## Pestañas de Connections
+
+### AI Models
+
+Los providers de modelos de lenguaje disponibles para tus agentes.
+
+| Provider | Tipo de conexión | Modelos |
+|----------|-----------------|---------|
+| **Anthropic** | Configurado por defecto | Claude Sonnet, Haiku, Opus |
+| **OpenAI** | API Key | GPT-4o |
+| **Google AI** | API Key | Gemini 1.5 Pro/Flash |
+| **DeepSeek** | API Key | DeepSeek V3, R1 |
+| **Ollama** | Model ID + URL del servidor | Cualquier modelo local |
+
+Los providers con API Key guardan la clave localmente en tu bridge — nunca pasan por los servidores de Conduit AI.
+
+Para Ollama, el flujo es diferente: se configura con el **model ID** (ej: `llama3.2`) y la **URL del servidor** (ej: `http://localhost:11434`). Ver [Conectar Ollama](/guides/connect-ollama).
+
+### Integraciones (Composio)
+
+Más de 1000 servicios disponibles via Composio — GitHub, Slack, Notion, Google Drive, Gmail, y muchos más.
+
+La mayoría se conectan via **OAuth** (sin tocar tu contraseña), algunos via API Key. Una vez conectados, los agentes tienen acceso a herramientas del servicio que pueden usar en automatizaciones.
+
+**Costo**: 1 crédito de Composio por ejecución de tool.
+
+Ver guías de conexión:
+- [Conectar GitHub](/guides/connect-github)
+- [Conectar Slack](/guides/connect-slack)
+
+### API Connectors
+
+Para APIs propias o servicios que no están en Composio. El costo va directo al proveedor de la API.
+
+### Bridge
+
+Estado y configuración del bridge local. El bridge es el proceso que corre en tu máquina y conecta la web de Conduit AI con tu entorno local (archivos, modelos locales, Claude Code).
+
+Ver [Instalar el bridge](/getting-started/install-bridge).
+
+### Estado
+
+Vista en tiempo real de todos los servicios conectados. Muestra conexiones activas, tokens vencidos que hay que renovar, y errores de conexión.
+
+## Cómo funcionan las conexiones
+
+**Providers de IA**: la API key se guarda en el bridge local (no en Supabase). Cuando un agente hace un request, el bridge usa la key guardada para llamar al provider.
+
+**Composio**: la conexión OAuth se guarda en Supabase via `connection_id`. Cuando una automatización ejecuta un tool, el app llama a Composio con ese ID.
+
+**Ollama**: los modelos se guardan en la tabla `local_models` de Supabase con `model_id` y `base_url`. El bridge lee esa lista y la usa para resolver qué URL llamar según el modelo elegido.

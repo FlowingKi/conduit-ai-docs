@@ -1,6 +1,80 @@
 ---
-title: Agents
-description: Próximamente.
+title: Agentes
+description: Qué son los agentes, cómo configurarlos y cómo asignarles skills y destino de archivos.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Los agentes son el núcleo de Conduit AI. Cada agente es una IA especializada con su propio modelo, personalidad y conjunto de skills. Podés tener varios agentes con roles diferentes — uno para código, uno para investigación, uno para tareas administrativas.
+
+## Crear un agente
+
+1. Abrí **Agents** en el menú lateral
+2. Hacé clic en **Nuevo agente**
+3. Completá el formulario y guardá
+
+## Campos de configuración
+
+### Modelo
+
+Elegís qué LLM usa el agente. Los modelos disponibles dependen de qué providers conectaste en **Connections**.
+
+| Modelo | Cuándo usarlo |
+|--------|---------------|
+| `claude-sonnet-4-6` | Uso general, código, análisis — el más equilibrado |
+| `claude-opus-4-8` | Máxima capacidad de razonamiento |
+| `claude-haiku-4-5` | Respuestas rápidas, tareas simples, bajo costo |
+| `gpt-4o` | Requiere OpenAI conectado |
+| `gemini-1.5-pro` | Requiere Google AI conectado — contexto de 1M tokens |
+| `gemini-1.5-flash` | Veloz y económico |
+| `deepseek-chat` | DeepSeek V3 — muy económico, bueno para código |
+| Modelos Ollama | Requiere Ollama corriendo + bridge activo |
+
+### Personalidad
+
+Tres parámetros que ajustan el comportamiento del agente:
+
+**Tono**
+- `Formal` — respuestas estructuradas, sin contracciones
+- `Balanceado` — default, natural y claro
+- `Casual` — conversacional, directo
+
+**Largo de respuesta**
+- `Breve` — respuestas cortas, al punto
+- `Normal` — equilibrado
+- `Detallado` — explicaciones exhaustivas
+
+**Creatividad** (temperature 0.0–1.0)
+
+Un slider que controla la aleatoriedad del modelo. `0.0` = determinista y preciso. `1.0` = creativo y variado.
+
+- Para código y análisis → valores bajos (0.2–0.4)
+- Para escritura creativa → valores altos (0.7–0.9)
+
+**Instrucciones adicionales**
+
+Campo de texto libre para el system prompt del agente. Definí el rol, restricciones o contexto específico del agente.
+
+### Destino de archivos
+
+Dónde guarda el agente los archivos que produce:
+
+| Destino | Descripción |
+|---------|-------------|
+| ☁️ Cloud | Archivos guardados en Supabase — accesibles desde cualquier dispositivo |
+| 📁 Local | Archivos en tu máquina, vía el bridge |
+| 🔗 Connector | Archivos enviados a un conector externo (Composio) |
+
+### Skills asignados
+
+Los skills amplían las capacidades del agente. Se asignan desde el campo **Skills** al editar el agente. Ver [Skills](/concepts/skills) para más detalle.
+
+## Estados del agente
+
+| Estado | Significado |
+|--------|-------------|
+| `activo` | Disponible para recibir tareas |
+| `inactivo` | Pausado manualmente |
+| `error` | Hubo un problema en la última tarea |
+
+## Tokens y consumo
+
+Cada agente tiene un contador de tokens acumulados visible en [Monitor](/concepts/monitor). Útil para optimizar el uso de modelos y controlar costos.

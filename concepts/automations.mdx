@@ -1,6 +1,79 @@
 ---
 title: Automations
-description: Próximamente.
+description: Canvas visual para crear flows automáticos con nodos de agente, condición, loop, tool y más.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Las automatizaciones son flows que se ejecutan automáticamente en respuesta a un trigger — un webhook entrante, un schedule, o un evento manual. Se diseñan en el canvas visual del workspace.
+
+## Canvas visual
+
+El canvas es un editor de nodos y conexiones estilo flow. Cada nodo representa un paso del flow; las conexiones definen el orden de ejecución.
+
+Para acceder al canvas, abrí un workspace y hacé clic en la pestaña **Canvas**.
+
+## Nodos disponibles
+
+### Nodos principales
+
+| Nodo | Ícono | Descripción |
+|------|-------|-------------|
+| **Trigger** | ⚡ | Punto de entrada del flow — define cuándo y cómo arranca |
+| **Agent** | 🤖 | Ejecuta un agente con un prompt dado |
+| **Instruction** | 📋 | Bloque de texto o instrucción que pasa al siguiente nodo |
+| **Condition** | 🔀 | Bifurca el flow según una condición (true/false) |
+| **Loop** | 🔁 | Repite pasos sobre una lista de items |
+| **Output** | 📤 | Guarda o envía el resultado del flow |
+| **Tool** | 🔧 | Ejecuta una tool de Composio (GitHub, Slack, etc.) sin pasar por un agente |
+| **Subflow** | 📦 | Ejecuta otro flow anidado |
+| **Note** | 💬 | Anotación en el canvas — no afecta la ejecución |
+
+### Nodos de datos
+
+| Nodo | Ícono | Descripción |
+|------|-------|-------------|
+| **HTTP Request** | 🌐 | Hace un llamado HTTP a una URL externa |
+| **Filter** | 🚦 | Filtra items de una lista según criterios |
+| **Set Variables** | 📦 | Define o modifica variables del flow |
+| **Router** | 🔀 | Enruta hacia múltiples ramas según condiciones |
+| **Data Transformer** | 🔄 | Transforma y reformatea datos entre nodos |
+
+### Nodos avanzados
+
+| Nodo | Ícono | Descripción |
+|------|-------|-------------|
+| **Delay** | ⏱ | Pausa la ejecución por un tiempo definido |
+| **Iterator** | 🔢 | Itera sobre una colección de forma controlada |
+| **Aggregator** | 🗂 | Acumula resultados de múltiples ramas |
+| **Merge** | 🔗 | Combina múltiples flujos en uno |
+| **Error Handler** | 🛡 | Captura errores y define comportamiento de fallback |
+| **Webhook Response** | 📬 | Responde al webhook entrante con un payload |
+
+## Triggers
+
+El nodo **Trigger** define cuándo arranca el flow. Ver [Tipos de trigger](/reference/trigger-types) para el detalle de cada tipo.
+
+## Variables
+
+Las variables permiten pasar datos de un nodo a otro. Se referencian con la sintaxis `{{...}}`:
+
+```
+{{trigger._payload.email}}
+{{outputs.1.result}}
+{{variables.contador}}
+```
+
+Ver [Variables](/reference/variables) para la referencia completa.
+
+## AI Builder y Linear Builder
+
+El canvas tiene dos modos de construcción:
+
+**Canvas libre** — modo por defecto. Arrastrás nodos, los conectás, y los configurás manualmente.
+
+**Linear Builder** — modo guiado. Describís el flow en lenguaje natural y el sistema genera los nodos automáticamente. Útil para flows lineales simples.
+
+## Guardar y activar
+
+El canvas se guarda automáticamente. Para activar un flow:
+1. Asegurate de que el nodo Trigger esté correctamente configurado
+2. El flow queda activo y espera el trigger correspondiente

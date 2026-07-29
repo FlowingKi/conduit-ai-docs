@@ -1,6 +1,54 @@
 ---
 title: Monitor
-description: Próximamente.
+description: Panel de observabilidad — tokens por agente, historial de tareas y estado del bridge.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Monitor es el panel de observabilidad de Conduit AI. Desde acá ves el consumo de tokens, el historial de tareas y el estado de los servicios conectados.
+
+## Métricas principales
+
+Cuatro cards en la parte superior:
+
+| Métrica | Descripción |
+|---------|-------------|
+| **Tokens acumulados** | Total de tokens consumidos por todos los agentes del equipo |
+| **Sesión Claude restante** | Porcentaje de contexto disponible en la sesión activa (límite de 50k tokens) |
+| **Tareas completadas** | Cantidad de tareas finalizadas exitosamente |
+| **En ejecución** | Tareas corriendo ahora mismo |
+
+Cuando hay tareas fallidas, aparece el conteo en rojo bajo "Tareas completadas".
+
+## Consumo por agente
+
+Barra horizontal que muestra el consumo de tokens de cada agente del equipo. Útil para identificar qué agentes están usando más recursos y si vale la pena cambiarlos a un modelo más económico.
+
+Cada barra muestra:
+- El nombre y emoji del agente
+- El modelo que usa
+- Los tokens acumulados
+
+## Tareas recientes
+
+Tabla con las últimas 10 tareas ejecutadas:
+
+| Columna | Descripción |
+|---------|-------------|
+| **Agente** | Qué agente ejecutó la tarea |
+| **Prompt** | Texto de la instrucción (truncado) |
+| **Tokens** | Tokens usados en esa tarea |
+| **Estado** | completed / running / pending / failed / cancelled |
+| **Cuándo** | Tiempo relativo (hace 5m, hace 2h) |
+
+## Estado de servicios
+
+Sección inferior con dos cards:
+
+**Bridge y conexiones** — muestra el estado de cada servicio conectado (Composio, providers de IA). Si un token venció, aparece con alerta para reconectar.
+
+**APIs custom** — costo acumulado de APIs custom configuradas (en construcción).
+
+## Cuándo revisar Monitor
+
+- **Si un agente no responde**: verificá si hay tareas en estado `failed` o `running` sin terminar
+- **Si el consumo es alto**: revisá consumo por agente y considerá cambiar a Haiku o DeepSeek para tareas simples
+- **Antes de sesiones largas**: verificá el % de sesión Claude restante — si está bajo, puede haber degradación de performance

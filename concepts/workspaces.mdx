@@ -1,6 +1,64 @@
 ---
 title: Workspaces
-description: Próximamente.
+description: Espacios de trabajo donde chatear con agentes, armar automatizaciones en el canvas y gestionar la memoria del equipo.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Un workspace es un espacio de trabajo compartido donde podés chatear con uno o más agentes, armar automatizaciones en el canvas visual, y acceder a la memoria del equipo.
+
+## Crear un workspace
+
+1. Abrí **Workspaces** en el menú lateral
+2. Hacé clic en **Nuevo workspace**
+3. Elegí un nombre y los agentes que participan
+
+## Pestañas del workspace
+
+Cada workspace tiene cuatro vistas:
+
+### Chat
+
+El panel principal de conversación. Los agentes que participan en el workspace están disponibles para chatear.
+
+**Chat multi-agente**
+
+Por defecto, los mensajes van a todos los agentes activos del workspace. Para dirigirte a uno específico, usá `@nombre`:
+
+```
+@Alex resumí los últimos 5 commits
+@Dev generá los tests unitarios para este módulo
+```
+
+Cada agente responde de forma independiente. Podés tener conversaciones simultáneas con varios agentes en el mismo espacio.
+
+**Delegación entre agentes**
+
+Los agentes también pueden mencionarse entre sí en sus respuestas para pasar tareas. Esto permite flujos de trabajo encadenados sin que el usuario tenga que intervenir.
+
+### Canvas
+
+Editor visual de automatizaciones. Acá armás los flows que se ejecutan automáticamente via triggers. Ver [Automations](/concepts/automations) para el detalle de los nodos.
+
+### Memory
+
+Vista de la memoria del workspace — hechos, notas y contexto acumulado. Ver [Memory](/concepts/memory).
+
+### Settings
+
+Configuración del workspace:
+- **Nombre y descripción**
+- **Agentes participantes** — agregá o quitá agentes
+- **Reglas del workspace** — instrucciones en texto libre que aplican a todos los agentes de este espacio
+
+## Reglas del workspace
+
+Las reglas son instrucciones que se inyectan como contexto a todos los agentes del workspace. Útil para definir convenciones de equipo, restricciones de dominio, o contexto de proyecto.
+
+```
+Siempre respondé en español.
+El proyecto usa TypeScript strict. No uses 'any'.
+Los commits siguen Conventional Commits.
+```
+
+## Tasks
+
+Cuando un agente ejecuta una tarea larga (vía bridge), queda registrada como task en el historial del workspace. Podés ver el estado de las tareas en [Monitor](/concepts/monitor).

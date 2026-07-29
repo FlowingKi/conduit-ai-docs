@@ -1,6 +1,80 @@
 ---
 title: Skills
-description: Próximamente.
+description: Paquetes de instrucciones y herramientas que amplían las capacidades de los agentes.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Los skills son paquetes de instrucciones, comportamientos y herramientas que podés asignar a los agentes para ampliar sus capacidades. Un skill puede ser tan simple como un prompt de sistema o tan complejo como una integración con una herramienta externa.
+
+## Tipos de skill
+
+| Tipo | Descripción | Cuándo usarlo |
+|------|-------------|---------------|
+| `skill` | Instrucción de comportamiento general | Definir cómo actúa el agente en un dominio |
+| `hook` | Se ejecuta en un momento específico del flujo | Acciones automáticas (al iniciar sesión, al guardar, etc.) |
+| `prompt` | Prompt de sistema adicional | Inyectar contexto o restricciones extra |
+| `tool` | Herramienta externa que el agente puede llamar | Integrar APIs, funciones, scripts |
+
+## Paquetes de skills
+
+Los skills se organizan en **paquetes**. Un paquete es una colección de skills relacionados — podés importar un paquete de GitHub con un comando, o crearlo manualmente.
+
+Ejemplo de estructura de paquete:
+```
+mi-paquete/
+├── SKILL.md          # Metadata del paquete
+├── code-style.md     # Skill de estilo de código
+├── git-workflow.md   # Skill de workflow git
+└── testing.md        # Skill de testing
+```
+
+## Crear un skill
+
+### Con asistente de IA
+
+1. Abrí **Skills** en el menú lateral
+2. Hacé clic en **Nuevo skill**
+3. Describí qué querés que haga el skill
+4. El asistente genera el frontmatter YAML y el contenido
+
+### Manual (YAML)
+
+Cada skill es un archivo Markdown con frontmatter:
+
+```yaml
+---
+name: mi-skill
+type: skill
+description: Descripción de lo que hace este skill
+---
+
+Contenido del skill en Markdown...
+```
+
+Ver [Formato de skill](/reference/skill-format) para la referencia completa del frontmatter.
+
+## Asignar skills a agentes
+
+En la pantalla de edición de un agente, el campo **Skills** muestra la lista de skills disponibles. Seleccioná los que querés asignar. Los skills asignados se incluyen como contexto adicional cada vez que el agente recibe un mensaje.
+
+## Importar desde GitHub
+
+Podés importar paquetes de skills desde repositorios públicos de GitHub. El paquete se descarga y queda disponible para asignar a cualquier agente.
+
+1. Abrí **Skills → Importar**
+2. Pegá la URL del repositorio
+3. El sistema descarga y registra todos los skills del paquete
+
+## Hooks
+
+Los skills de tipo `hook` se ejecutan automáticamente en momentos específicos. El campo `tools` en el frontmatter define qué herramientas del sistema puede usar el hook.
+
+```yaml
+---
+name: session-start
+type: hook
+description: Se ejecuta al iniciar una sesión de trabajo
+tools: memory_read, workspace_context
+---
+```
+
+Los hooks activos para un agente se ejecutan sin necesitar una instrucción explícita del usuario.
