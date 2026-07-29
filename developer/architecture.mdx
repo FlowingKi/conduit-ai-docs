@@ -1,6 +1,133 @@
 ---
-title: architecture
-description: Próximamente.
+title: Arquitectura
+description: Cómo se conectan el app (Vercel), el bridge local, Supabase y los providers de IA.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Conduit AI está compuesto por tres piezas principales que trabajan juntas:
+
+```
+Usuario
+  │
+  ├── Browser → App (Next.js / Vercel)
+  │                │
+  │                ├── Supabase (DB + Auth + Realtime)
+  │                └── Composio (integraciones OAuth)
+  │
+  └── Bridge (Express / localhost:3284)
+                   │
+                   ├── Claude Code CLI (tareas, vault)
+                   ├── OpenAI / Google AI / DeepSeek API
+                   └── Ollama (localhost:11434)
+```
+
+---
+
+## App — Next.js en Vercel
+
+El frontend y el backend serverless corren en Vercel como una aplicación Next.js con App Router.
+
+**Responsabilidades:**
+- UI completa (dashboard, canvas, chat, memory, connections)
+- Server Actions para leer/escribir en Supabase
+- API Routes para OAuth de Composio, webhooks entrantes, y llamados al bridge
+- Autenticación via NextAuth con Supabase como store
+
+**URL:** `https://conduit-ai-prod.vercel.app`
+
+**Stack:** Next.js 14 · TypeScript · Supabase JS · React Flow · Tailwind (custom)
+
+---
+
+## Bridge — Express en localhost
+
+El bridge es un proceso Node.js que corre en la máquina del usuario. Es la pieza que conecta la web con el entorno local.
+
+**Puerto:** `3284`
+**URL base:** `http://localhost:3284`
+
+**Responsabilidades:**
+- Ejecutar Claude Code CLI para tareas largas (`/task`, `/stream`)
+- Llamar a los providers de IA con las API keys locales (`/chat/run`)
+- Ejecutar flows de automatización (`/flow/run`)
+- Operar sobre el vault de Obsidian (`/vault/*`)
+- Recibir `--mcp-config` de Composio para tools en el chat
+
+**Distribución:** ejecutable `.exe` para Windows (descargable desde la pestaña Bridge en Connections).
+
+**Repositorio:** `FlowingKi/conduit-ai-bridge`
+
+---
+
+## Supabase
+
+Base de datos, autenticación y comunicación en tiempo real.
+
+**Tablas principales:**
+
+| Tabla | Contenido |
+|-------|-----------|
+| `agents` | Configuración de agentes (nombre, modelo, personalidad, skills) |
+| `workspaces` | Workspaces con canvas_data (nodes/edges) y reglas |
+| `tasks` | Historial de tareas ejecutadas por el bridge |
+| `token_usage` | Tokens consumidos por agente |
+| `brain_facts` | Hechos de memoria por workspace |
+| `connectors` | Estado de conexiones OAuth (Composio) |
+| `local_models` | Modelos Ollama configurados (model_id + base_url) |
+| `users` | Usuarios con bridge_token para autenticación |
+
+**Auth:** NextAuth + Supabase Adapter. El `teamId` es la unidad de aislamiento — cada equipo ve solo sus datos via RLS.
+
+**Realtime:** usado para trigger `automation_runs` (webhook custom triggers).
+
+---
+
+## Flujo de una tarea
+
+```
+1. Usuario escribe prompt en workspace chat
+2. App (Vercel) llama al bridge en POST /chat/run
+3. Bridge identifica el modelo (Claude, GPT, Gemini, Ollama)
+4. Bridge ejecuta Claude Code CLI o llama a la API del provider
+5. Respuesta se transmite via SSE al browser
+6. App guarda token_usage en Supabase
+```
+
+## Flujo de una automatización
+
+```
+1. Trigger activa el flow (webhook POST, cron, manual)
+2. App (Vercel) llama al bridge en POST /flow/run con nodes + edges
+3. Bridge ejecuta los nodos secuencialmente / en paralelo
+4. Nodos Agent llaman al LLM; nodos Tool llaman a Composio
+5. El canvas muestra el estado de cada nodo via SSE
+6. Output final se envía al destino configurado (Slack, email, vault, etc.)
+```
+
+## Flujo de autenticación bridge → app
+
+Cuando el bridge necesita llamar de vuelta al app (ej: ejecutar un tool de Composio), usa autenticación por equipo:
+
+```
+Bridge → POST {appUrl}/api/composio/tool/execute
+         Authorization: Bearer <BRIDGE_TOKEN del equipo>
+
+App → busca bridge_token en Supabase WHERE team_id = X
+    → compara con el Bearer recibido
+    → si coincide: ejecuta | si no: 401
+```
+
+El token es por equipo (no global) para que cada usuario tenga credenciales aisladas.
+
+---
+
+## Providers de IA
+
+| Provider | Dónde se resuelve | Cómo se autentica |
+|----------|------------------|-------------------|
+| Anthropic (Claude) | Bridge — CLI de Claude Code | CLI ya autenticado |
+| OpenAI | Bridge — API directa | API key guardada localmente |
+| Google AI | Bridge — API directa | API key guardada localmente |
+| DeepSeek | Bridge — API directa | API key guardada localmente |
+| Ollama | Bridge — HTTP a localhost:11434 | Sin auth (local) |
+
+Las API keys nunca pasan por Vercel ni por Supabase — se guardan encriptadas en el bridge.

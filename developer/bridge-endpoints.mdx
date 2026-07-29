@@ -1,6 +1,320 @@
 ---
-title: bridge endpoints
-description: Próximamente.
+title: Bridge endpoints
+description: Lista completa de endpoints del bridge con método, auth, body y response.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+El bridge corre en `http://localhost:3284`. Ver [Bridge API](/reference/bridge-api) para ejemplos de uso. Esta página es la referencia técnica completa.
+
+## Resumen de rutas
+
+| Método | Ruta | Auth | Descripción |
+|--------|------|------|-------------|
+| `GET` | `/health` | — | Estado del bridge |
+| `POST` | `/stop` | — | Detiene el proceso |
+| `PUT` | `/config/keys` | — | Guarda API key localmente |
+| `GET` | `/config/keys/:service` | — | Verifica si existe una key |
+| `POST` | `/config/setup` | — | Configuración inicial del bridge |
+| `POST` | `/obsidian/*` | — | Proxy a Obsidian CLI |
+| `POST` | `/task` | ✓ | Inicia tarea larga (Claude Code) |
+| `GET` | `/stream/:taskId` | ✓ | SSE del progreso de una tarea |
+| `POST` | `/chat/run` | ✓ | Chat con LLM (streaming) |
+| `POST` | `/mcp/*` | ✓ | Proxy a MCP |
+| `POST` | `/flow/run` | ✓ | Ejecuta un flow de automatización |
+| `GET` | `/flow/events/:runId` | ✓ | SSE del progreso de un flow |
+| `GET` | `/flow/:runId` | ✓ | Snapshot de un flow en ejecución |
+| `POST` | `/vault/save` | ✓ | Guarda en el vault de Obsidian |
+| `POST` | `/vault/write` | ✓ | Escribe un archivo en ruta específica |
+| `POST` | `/vault/delete` | ✓ | Elimina un archivo del vault |
+| `POST` | `/vault/setup` | ✓ | Crea estructura canónica del vault |
+| `GET` | `/vault/tree` | ✓ | Árbol de carpetas del vault |
+| `GET` | `/vault/file` | ✓ | Contenido de un archivo |
+| `GET` | `/vault/search` | ✓ | Búsqueda de texto en el vault |
+| `POST` | `/vault/extract-facts` | ✓ | Propone hechos nuevos desde el vault |
+
+**Auth ✓**: requiere `Authorization: Bearer <BRIDGE_TOKEN>` en el header.
+
+---
+
+## Sin autenticación
+
+### `GET /health`
+```json
+// Response
+{ "status": "ok", "version": "0.1.0", "port": 3284, "bridgeUrl": "http://localhost:3284" }
+```
+
+### `POST /stop`
+Detiene el proceso. Usado por el tray icon. Responde `{ "ok": true }` y termina en 200ms.
+
+### `PUT /config/keys`
+```json
+// Body
+{ "service": "openai", "apiKey": "sk-..." }
+// Response
+{ "ok": true }
+```
+
+### `GET /config/keys/:service`
+```json
+// Response
+{ "connected": true }
+```
+
+### `POST /config/setup`
+Asocia el bridge a un equipo en el primer uso. Guarda el `bridge_token` en Supabase.
+
+---
+
+## Chat
+
+### `POST /chat/run`
+
+```json
+// Body
+{
+  "messages": [{ "role": "user", "content": "..." }],
+  "systemPrompt": "...",
+  "model": "claude-sonnet-4-6",
+  "localModels": [{ "model_id": "llama3.2", "base_url": "http://localhost:11434" }],
+  "composioMcpUrl": "https://mcp.composio.dev/...",
+  "agentId": "uuid",
+  "workspaceId": "uuid"
+}
+```
+
+**Response:** SSE stream con eventos:
+
+```
+data: {"type": "chunk", "text": "..."}
+data: {"type": "tool_use", "label": "Ejecutando GITHUB_LIST_ISSUES"}
+data: {"type": "tool_result", "label": "Resultado recibido"}
+data: {"type": "done", "usage": {"input_tokens": 150, "output_tokens": 80}}
+data: {"type": "error", "text": "..."}
+```
+
+**Resolución de provider** (en orden):
+1. Si `model` coincide con algún `localModels[].model_id` → Ollama en esa `base_url`
+2. Si `model` empieza con `gpt-` → OpenAI API
+3. Si `model` empieza con `gemini-` → Google AI API
+4. Si `model` empieza con `deepseek-` → DeepSeek API
+5. Sin match → Claude Code CLI (Anthropic)
+
+---
+
+## Tareas
+
+### `POST /task`
+
+Inicia una tarea larga. Claude Code CLI ejecuta el prompt de forma asíncrona.
+
+```json
+// Body
+{
+  "prompt": "Creá un componente React...",
+  "agent_id": "uuid",
+  "workspace_id": "uuid",
+  "output_dest": { "type": "cloud" }
+}
+
+// Response 202
+{ "taskId": "uuid", "streamUrl": "/stream/uuid" }
+```
+
+### `GET /stream/:taskId`
+
+SSE stream del progreso de la tarea.
+
+```
+event: output
+data: {"line": "...texto de output..."}
+
+event: status
+data: {"status": "running"}
+
+event: status
+data: {"status": "completed"}
+```
+
+Los eventos previos se replayan para late joiners (si la tarea ya comenzó).
+
+---
+
+## Flows
+
+### `POST /flow/run`
+
+```json
+// Body
+{
+  "automationId": "uuid",
+  "nodes": [...],
+  "edges": [...],
+  "teamId": "uuid"
+}
+
+// Response 202
+{ "runId": "uuid", "eventsUrl": "/flow/events/uuid" }
+```
+
+### `GET /flow/events/:runId`
+
+SSE stream del estado de cada nodo durante la ejecución.
+
+```
+event: node_update
+data: {"nodeId": "n1", "status": "running"}
+
+event: node_output
+data: {"nodeId": "n1", "line": "Procesando..."}
+
+event: node_update
+data: {"nodeId": "n1", "status": "completed"}
+
+event: flow_done
+data: {"status": "completed"}
+```
+
+### `GET /flow/:runId`
+
+Snapshot del estado actual del run.
+
+```json
+{
+  "id": "uuid",
+  "status": "completed",
+  "startedAt": "2026-07-28T10:00:00Z",
+  "completedAt": "2026-07-28T10:00:05Z",
+  "nodes": [
+    { "nodeId": "n1", "status": "completed", "output": "..." }
+  ]
+}
+```
+
+---
+
+## Vault (Obsidian)
+
+### `POST /vault/save`
+
+```json
+// Body — modo manual
+{
+  "destination": "brain",   // "brain" | "vault"
+  "mode": "manual",         // "manual" | "draft" | "quick"
+  "content": "Hecho clave",
+  "vaultPath": "/ruta/al/vault"
+}
+
+// Response
+{ "ok": true, "path": "/ruta/al/vault/BRAIN/2026-07-28_10-00-00.md" }
+```
+
+En modo `draft`, el LLM genera el contenido pero no escribe archivo:
+```json
+{ "ok": true, "draft": "Contenido generado...", "suggestedPath": "..." }
+```
+
+En modo `quick`, el bridge usa Claude Code con su Write tool. Responde SSE stream.
+
+### `POST /vault/write`
+
+```json
+// Body
+{
+  "relativePath": "CONTEXT/decisiones/auth.md",
+  "content": "# Decisión\n...",
+  "vaultPath": "/ruta/al/vault"
+}
+// Response
+{ "ok": true, "path": "/ruta/absoluta/al/archivo" }
+```
+
+### `GET /vault/tree`
+
+```
+GET /vault/tree?vaultPath=/ruta&rootFolder=CONTEXT
+```
+
+```json
+{
+  "tree": [
+    {
+      "name": "sesiones",
+      "type": "folder",
+      "children": [
+        { "name": "sesion-2026-07-28.md", "type": "file", "path": "sesiones/sesion-2026-07-28.md" }
+      ]
+    }
+  ]
+}
+```
+
+### `GET /vault/file`
+
+```
+GET /vault/file?path=CONTEXT/decisiones/auth.md&vaultPath=/ruta
+```
+
+```json
+{ "ok": true, "content": "# Decisión...", "path": "CONTEXT/decisiones/auth.md" }
+```
+
+### `GET /vault/search`
+
+```
+GET /vault/search?q=autenticación&rootFolder=CONTEXT&vaultPath=/ruta
+```
+
+```json
+{
+  "ok": true,
+  "results": [
+    { "path": "decisiones/auth.md", "preview": "...autenticación via NextAuth..." }
+  ]
+}
+```
+
+### `POST /vault/extract-facts`
+
+```json
+// Body
+{
+  "relativePath": "CONTEXT/sesiones",
+  "existingFacts": ["El proyecto usa TypeScript"],
+  "vaultPath": "/ruta"
+}
+
+// Response
+{
+  "proposals": ["Nuevo hecho detectado"],
+  "contradictions": [{ "fact": "...", "conflictsWith": "..." }],
+  "skipped": 2
+}
+```
+
+### `POST /vault/setup`
+
+```json
+// Body
+{ "vaultPath": "/ruta", "agents": [{ "name": "Dev" }, { "name": "Alex" }] }
+
+// Response
+{
+  "ok": true,
+  "items": [
+    { "path": "BRAIN", "status": "created" },
+    { "path": "CONTEXT", "status": "existed" }
+  ]
+}
+```
+
+---
+
+## CORS y acceso
+
+El bridge acepta requests de:
+- `localhost` (cualquier puerto)
+- `*.vercel.app`
+- `vscode-webview` (extensión VS Code)
+
+Requiere el header `Access-Control-Allow-Private-Network: true` para Chrome Private Network Access.

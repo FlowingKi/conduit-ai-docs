@@ -1,6 +1,97 @@
 ---
-title: mcp integration
-description: Próximamente.
+title: Integración MCP
+description: Cómo Composio conecta sus tools via Model Context Protocol al chat del bridge.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Conduit AI usa el Model Context Protocol (MCP) para que los agentes puedan ejecutar tools de servicios externos (GitHub, Slack, Gmail, etc.) durante el chat, sin código adicional.
+
+## Qué es MCP en este contexto
+
+MCP es un protocolo que permite a los modelos LLM llamar herramientas externas de forma estandarizada. Composio expone sus 1000+ tools como un servidor MCP — el bridge pasa esa URL al CLI de Claude para que las tools queden disponibles en el contexto del chat.
+
+## Flujo completo
+
+```
+1. Usuario conecta GitHub en Connections (OAuth via Composio)
+2. App obtiene la MCP URL del servidor de Composio para ese equipo
+3. Usuario abre un workspace → app fetcha la MCP URL en background
+4. Usuario envía un mensaje al chat
+5. App llama al bridge: POST /chat/run con composioMcpUrl en el body
+6. Bridge pasa --mcp-config a Claude Code CLI:
+   claude --mcp-config <config-json> --print < prompt
+7. Claude tiene acceso a todas las tools de Composio durante esa conversación
+8. Si el usuario pide "listá mis PRs abiertos", Claude llama a GITHUB_LIST_PULL_REQUESTS
+9. La respuesta vuelve como tool_result y Claude la incorpora a su respuesta
+```
+
+## Body de /chat/run con MCP
+
+```json
+{
+  "messages": [...],
+  "model": "claude-sonnet-4-6",
+  "composioMcpUrl": "https://mcp.composio.dev/v1/teams/abc123/mcp",
+  "agentId": "uuid",
+  "workspaceId": "uuid"
+}
+```
+
+Cuando `composioMcpUrl` está presente, el bridge construye la configuración MCP y la pasa al CLI:
+
+```json
+{
+  "mcpServers": {
+    "composio": {
+      "type": "sse",
+      "url": "https://mcp.composio.dev/v1/teams/abc123/mcp"
+    }
+  }
+}
+```
+
+## Tools disponibles
+
+Las tools disponibles en el chat dependen de qué servicios están conectados en **Connections → Integraciones**. Composio solo expone las tools de servicios con conexión activa.
+
+Ejemplos de tools que el agente puede llamar:
+
+| Servicio | Tool | Descripción |
+|----------|------|-------------|
+| GitHub | `GITHUB_LIST_PULL_REQUESTS` | Lista los PRs del repositorio |
+| GitHub | `GITHUB_CREATE_ISSUE` | Crea un nuevo issue |
+| Slack | `SLACK_SENDS_A_MESSAGE` | Envía un mensaje a un canal |
+| Gmail | `GMAIL_SEND_EMAIL` | Envía un email |
+| Notion | `NOTION_CREATE_PAGE` | Crea una página en Notion |
+
+La lista exacta depende de los servicios conectados y las herramientas que Composio expone para cada uno.
+
+## MCP en automatizaciones (nodo Tool)
+
+En el canvas de automatizaciones, el nodo **Tool** ejecuta tools de Composio directamente sin pasar por un agente ni por MCP. El bridge llama al app en `POST /api/composio/tool/execute` con el `tool_slug` y los argumentos.
+
+```
+Nodo Tool en canvas → bridge → POST /api/composio/tool/execute → Composio → servicio externo
+```
+
+La autenticación usa el `bridge_token` del equipo (ver [Arquitectura](/developer/architecture)).
+
+## Endpoint /mcp del bridge
+
+El bridge expone `POST /mcp/*` como proxy a comandos MCP locales via Claude Code CLI:
+
+```bash
+claude mcp call <path> --input <json>
+```
+
+Este endpoint está disponible para uso avanzado cuando se integra el Claude Code SDK directamente.
+
+## Obtener la MCP URL
+
+La app fetcha la MCP URL de Composio cuando se carga un workspace:
+
+```
+GET /api/composio/mcp-url
+→ { "mcpUrl": "https://mcp.composio.dev/v1/teams/abc123/mcp" }
+```
+
+Este request ocurre en background — no bloquea el render del workspace. Si no hay servicios conectados, `mcpUrl` es `null` y el bridge no recibe `composioMcpUrl`.
