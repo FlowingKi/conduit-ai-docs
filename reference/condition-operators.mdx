@@ -1,6 +1,106 @@
 ---
-title: condition operators
-description: Próximamente.
+title: Operadores de condición
+description: Los 12 operadores disponibles en nodos Condition y Filter, con AND/OR y modo avanzado.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Los operadores de condición se usan en los nodos **Condition** y **Filter** para evaluar valores de variables y bifurcar o filtrar el flow.
+
+## Operadores disponibles
+
+| Operador | Descripción | Requiere valor |
+|----------|-------------|----------------|
+| `equals` | El campo es igual al valor | ✓ |
+| `not_equals` | El campo es distinto del valor | ✓ |
+| `contains` | El campo contiene el texto | ✓ |
+| `not_contains` | El campo no contiene el texto | ✓ |
+| `starts_with` | El campo empieza con el texto | ✓ |
+| `ends_with` | El campo termina con el texto | ✓ |
+| `greater_than` | El campo es mayor que el valor (numérico) | ✓ |
+| `less_than` | El campo es menor que el valor (numérico) | ✓ |
+| `exists` | El campo existe y no es null/undefined | — |
+| `not_exists` | El campo no existe o es null/undefined | — |
+| `is_true` | El campo es `true` (boolean) | — |
+| `is_false` | El campo es `false` (boolean) | — |
+
+Los operadores `exists`, `not_exists`, `is_true` e `is_false` no requieren un valor adicional.
+
+## Estructura de una condición
+
+Cada condición tiene tres partes:
+
+1. **Campo** — expresión con variable (ej: `{{trigger._payload.status}}`)
+2. **Operador** — uno de los 12 operadores de la tabla
+3. **Valor** — texto o número con el que se compara (no aplica para `exists`, `not_exists`, `is_true`, `is_false`)
+
+## Múltiples condiciones (AND / OR)
+
+Podés agregar hasta 3 condiciones en modo visual. El operador lógico (AND u OR) aplica entre todas las condiciones del nodo.
+
+**AND** — todas las condiciones deben ser verdaderas:
+```
+{{trigger._payload.status}} equals "completed"
+AND
+{{trigger._payload.amount}} greater_than 100
+```
+
+**OR** — al menos una condición debe ser verdadera:
+```
+{{trigger._payload.type}} equals "error"
+OR
+{{trigger._payload.type}} equals "warning"
+```
+
+<Note>
+El operador lógico es global para el nodo — no podés mezclar AND y OR en el mismo nodo. Para lógica más compleja, usá el modo avanzado.
+</Note>
+
+## Modo avanzado
+
+Para condiciones más complejas, activá **Modo avanzado** en el nodo Condition. Esto habilita un campo de expresión libre donde podés escribir la condición directamente con variables:
+
+```
+{{outputs.agent.output}} contains "error"
+{{trigger._payload.score}} greater_than 80
+{{variables.activo}} is_true
+```
+
+El modo avanzado acepta la misma sintaxis que el modo visual pero como texto libre, lo que permite más flexibilidad.
+
+## Nodo Condition vs nodo Filter
+
+Ambos usan los mismos operadores, pero se comportan diferente:
+
+| Característica | Condition | Filter |
+|----------------|-----------|--------|
+| **Propósito** | Bifurcar el flow en dos ramas | Detener el flow si no se cumple |
+| **Salidas** | Dos edges: `verdadero` y `falso` | Una sola salida (si pasa) |
+| **Si no pasa** | El flow continúa por la rama `falso` | El flow se detiene (con opción de notificar) |
+
+## Ejemplos comunes
+
+**Verificar si un webhook tiene un campo:**
+```
+Campo: {{trigger._payload.user_id}}
+Operador: exists
+```
+
+**Filtrar por estado:**
+```
+Campo: {{trigger._payload.status}}
+Operador: equals
+Valor: completed
+```
+
+**Detectar error en respuesta de agente:**
+```
+Campo: {{outputs.agent.output}}
+Operador: contains
+Valor: error
+```
+
+**Verificar umbral numérico:**
+```
+Campo: {{outputs.s1.count}}
+Operador: greater_than
+Valor: 0
+```

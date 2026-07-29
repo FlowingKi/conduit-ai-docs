@@ -1,6 +1,281 @@
 ---
-title: bridge api
-description: Próximamente.
+title: Bridge API
+description: Endpoints del bridge local — referencia completa de rutas, autenticación, request y response.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+El bridge es un servidor Express que corre en `http://localhost:3284`. La app web lo llama directamente desde el navegador (no pasa por Vercel).
+
+## Autenticación
+
+La mayoría de los endpoints requieren autenticación via header:
+
+```
+Authorization: Bearer <BRIDGE_TOKEN>
+```
+
+El token se configura en la primera ejecución del bridge y se almacena en Supabase asociado al equipo.
+
+**Endpoints sin auth** (solo accesibles desde localhost):
+- `GET /health`
+- `POST /stop`
+- `POST /obsidian/*`
+- `PUT /config/keys`
+- `GET /config/keys/:service`
+- `POST /config/setup`
+
+---
+
+## Endpoints de estado
+
+### `GET /health`
+
+Estado del bridge.
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "version": "0.1.0",
+  "port": 3284,
+  "bridgeUrl": "http://localhost:3284"
+}
+```
+
+### `POST /stop`
+
+Detiene el proceso del bridge. Usado por el tray icon.
+
+**Response:** `{ "ok": true }`
+
+---
+
+## Configuración
+
+### `PUT /config/keys`
+
+Guarda una API key localmente (encriptada en el bridge). Usada por OpenAI, Google AI, DeepSeek.
+
+**Body:**
+```json
+{
+  "service": "openai",
+  "apiKey": "sk-..."
+}
+```
+
+**Response:** `{ "ok": true }`
+
+### `GET /config/keys/:service`
+
+Verifica si hay una key guardada para un servicio. No devuelve el valor.
+
+**Response:** `{ "connected": true }`
+
+### `POST /config/setup`
+
+Configura el bridge en el primer uso (asocia al team, guarda token).
+
+---
+
+## Chat
+
+### `POST /chat/run`
+
+Ejecuta un chat con el modelo LLM configurado. Soporta Claude, OpenAI, Google AI, DeepSeek y Ollama.
+
+**Body:**
+```json
+{
+  "messages": [
+    { "role": "user", "content": "Hola" }
+  ],
+  "systemPrompt": "Sos un asistente...",
+  "model": "claude-sonnet-4-6",
+  "localModels": [
+    { "model_id": "llama3.2", "base_url": "http://localhost:11434" }
+  ],
+  "composioMcpUrl": "https://mcp.composio.dev/...",
+  "agentId": "uuid",
+  "workspaceId": "uuid"
+}
+```
+
+**Response:** SSE stream con eventos:
+```
+data: {"type": "chunk", "text": "Hola, soy..."}
+data: {"type": "tool_use", "label": "Ejecutando GITHUB_LIST_ISSUES"}
+data: {"type": "done", "usage": {"input_tokens": 150, "output_tokens": 80}}
+```
+
+El campo `localModels` es la lista de modelos Ollama configurados. Si el `model` coincide con algún `model_id`, el bridge redirige el request a esa `base_url`.
+
+---
+
+## Tareas
+
+### `POST /task`
+
+Inicia una tarea larga en background (Claude Code ejecuta el prompt completo).
+
+**Body:**
+```json
+{
+  "prompt": "Creá un componente React para...",
+  "agent_id": "uuid",
+  "workspace_id": "uuid",
+  "output_dest": { "type": "cloud" }
+}
+```
+
+**Response:**
+```json
+{
+  "taskId": "uuid",
+  "streamUrl": "/stream/uuid"
+}
+```
+
+### `GET /stream/:taskId`
+
+SSE stream del progreso de una tarea.
+
+**Eventos:**
+```
+data: {"type": "chunk", "text": "..."}
+data: {"type": "tool_use", "label": "Escribiendo archivo..."}
+data: {"type": "done", "code": 0}
+```
+
+---
+
+## Flows
+
+### `POST /flow/run`
+
+Ejecuta un flow de automatización.
+
+**Body:**
+```json
+{
+  "flowId": "uuid",
+  "triggerPayload": { "key": "value" }
+}
+```
+
+---
+
+## MCP
+
+### `POST /mcp/run`
+
+Ejecuta un tool via MCP (Model Context Protocol).
+
+---
+
+## Vault (Obsidian)
+
+Todos los endpoints `/vault` requieren auth y operan sobre el vault de Obsidian configurado.
+
+### `POST /vault/save`
+
+Guarda contenido en el vault. Tres modos:
+
+| Modo | Descripción |
+|------|-------------|
+| `manual` | Escribe `content` directamente a un archivo |
+| `draft` | Usa el LLM para generar contenido, devuelve el borrador sin escribir |
+| `quick` | Usa Claude para escribir el archivo directamente via su Write tool |
+
+**Body (modo manual):**
+```json
+{
+  "destination": "brain",
+  "mode": "manual",
+  "content": "Hecho importante sobre el proyecto",
+  "vaultPath": "/Users/juan/vault"
+}
+```
+
+**Destinos disponibles:**
+- `brain` → guarda en `BRAIN/YYYY-MM-DD_HH-MM-SS.md`
+- `vault` → guarda en `CONTEXT/sesiones/sesion-YYYY-MM-DD_HH-MM-SS.md`
+
+### `POST /vault/write`
+
+Escribe un archivo en una ruta específica del vault.
+
+**Body:**
+```json
+{
+  "relativePath": "CONTEXT/decisiones/auth.md",
+  "content": "# Decisión de auth\n...",
+  "vaultPath": "/Users/juan/vault"
+}
+```
+
+### `GET /vault/tree`
+
+Árbol de carpetas del vault (solo archivos `.md`).
+
+**Query:** `?vaultPath=...&rootFolder=CONTEXT`
+
+**Response:**
+```json
+{
+  "tree": [
+    { "name": "sesiones", "type": "folder", "children": [
+      { "name": "sesion-2026-07-28.md", "type": "file", "path": "sesiones/sesion-2026-07-28.md" }
+    ]}
+  ]
+}
+```
+
+### `GET /vault/file`
+
+Contenido de un archivo específico.
+
+**Query:** `?path=CONTEXT/decisiones/auth.md&vaultPath=...`
+
+### `GET /vault/search`
+
+Búsqueda de texto en el vault.
+
+**Query:** `?q=autenticación&rootFolder=CONTEXT&vaultPath=...`
+
+### `POST /vault/extract-facts`
+
+Compara el contenido del vault con los hechos existentes en Brain y propone solo los nuevos.
+
+**Body:**
+```json
+{
+  "relativePath": "CONTEXT/sesiones",
+  "existingFacts": ["El proyecto usa TypeScript", "..."],
+  "vaultPath": "/Users/juan/vault"
+}
+```
+
+**Response:**
+```json
+{
+  "proposals": ["Nuevo hecho detectado"],
+  "contradictions": [{"fact": "...", "conflictsWith": "..."}],
+  "skipped": 2
+}
+```
+
+### `POST /vault/setup`
+
+Crea la estructura canónica de carpetas del vault (BRAIN, CONTEXT/sesiones, CONTEXT/memoria, etc.).
+
+### `POST /vault/delete`
+
+Elimina un archivo del vault.
+
+---
+
+## Puerto y URL
+
+El bridge corre en el puerto `3284` por defecto. La URL base es `http://localhost:3284`.
+
+La app web detecta el bridge en `http://localhost:3284/health` al cargar. Si no responde, muestra el banner de bridge offline.

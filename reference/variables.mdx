@@ -1,6 +1,115 @@
 ---
-title: variables
-description: Próximamente.
+title: Variables y expresiones
+description: Sintaxis {{...}}, variables disponibles en cada contexto y el VariablePicker.
 ---
 
-<Note>Esta sección está en construcción. Volvé pronto.</Note>
+Las variables permiten pasar datos de un nodo a otro dentro de un flow. Se usan en cualquier campo que muestre el botón `{{ }}` en el panel de configuración.
+
+## Sintaxis básica
+
+```
+{{expresión}}
+```
+
+Todo lo que va dentro de `{{ }}` se evalúa en tiempo de ejecución antes de ejecutar el nodo.
+
+## Variables disponibles
+
+### Datos del trigger
+
+```
+{{trigger._payload}}              # Payload completo del evento (objeto)
+{{trigger._payload.campo}}        # Campo específico del payload
+{{trigger._payload.user.email}}   # Acceso anidado con punto
+```
+
+Disponible en todos los nodos de un flow. El contenido depende del tipo de trigger:
+- **webhook**: el body del POST recibido
+- **composio_trigger**: el payload del evento de Composio
+- **cron**: `{ "scheduled_at": "..." }`
+- **manual**: el payload de prueba configurado en el trigger
+
+### Output de nodos upstream
+
+```
+{{outputs.NODO_ID.output}}        # Output completo del nodo (texto)
+{{outputs.NODO_ID.campo}}         # Campo específico (si el nodo define output schema)
+{{outputs.NODO_ID.reasoning}}     # Razonamiento interno (solo nodos Agent)
+```
+
+`NODO_ID` es el identificador único del nodo en el canvas (visible en el footer del panel de configuración como `id: ...`).
+
+**Atajos por tipo de nodo:**
+
+| Nodo | Variables disponibles |
+|------|-----------------------|
+| Agent | `output`, `reasoning` + campos del output schema |
+| HTTP Request | `status`, `body`, `ok` |
+| Tool | `output` |
+| Set Variables | Un campo por cada variable definida |
+| Data Transformer | Un campo por cada mapping definido |
+| Aggregator | `results`, `count`, `sum`, `joined` (según modo) |
+| Merge | Un campo por ID de rama |
+
+### Variables definidas en el flow
+
+```
+{{variables.nombre}}              # Variable definida con nodo Set Variables
+```
+
+Las variables de Set Variables son accesibles en cualquier nodo downstream después del nodo que las define.
+
+### Variables del Iterator
+
+Disponibles dentro del body de un nodo Iterator:
+
+```
+{{iterator.item}}                 # Ítem actual de la iteración
+{{iterator.index}}                # Posición (0-based)
+{{iterator.total}}                # Total de ítems en el array
+```
+
+### Variables de Error Handler
+
+Disponibles dentro de un nodo Error Handler:
+
+```
+{{error.message}}                 # Mensaje del error
+{{error.node_id}}                 # ID del nodo que falló
+{{error.node_label}}              # Label del nodo que falló
+{{error.timestamp}}               # Timestamp ISO del error
+```
+
+## VariablePicker
+
+En cualquier campo con soporte de variables, aparece el botón `{{ }}` en la esquina superior derecha. Hacé clic para abrir el picker o escribí `{{` para activar el autocomplete inline.
+
+El picker muestra las variables disponibles según el contexto del nodo actual:
+- `{{trigger._payload}}` — siempre disponible
+- `{{variables.nombre}}` — variables de Set Variables upstream
+- `{{iterator.item}}` — si estás dentro de un Iterator
+- `{{outputs.NODO_ID.output}}` — por cada nodo upstream del canvas
+
+Hacé clic en una sugerencia para insertarla en el cursor.
+
+## Mezclar variables con texto
+
+Las variables se pueden combinar con texto estático:
+
+```
+Hola {{trigger._payload.name}}, tu resumen está listo.
+
+Procesamos {{outputs.s1.count}} ítems el {{variables.fecha_hoy}}.
+```
+
+## Expresiones en modo avanzado (Condition)
+
+En el nodo Condition con modo avanzado activado, podés escribir expresiones comparativas:
+
+```
+{{outputs.agent.output}} contains "error"
+{{trigger._payload.status}} equals "completed"
+{{outputs.s1.count}} greater_than 10
+```
+
+Estas expresiones usan los mismos operadores que el modo visual. Ver [Operadores de condición](/reference/condition-operators).
