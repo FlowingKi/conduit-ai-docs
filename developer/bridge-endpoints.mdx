@@ -14,7 +14,6 @@ El bridge corre en `http://localhost:3284`. Ver [Bridge API](/reference/bridge-a
 | `PUT` | `/config/keys` | — | Guarda API key localmente |
 | `GET` | `/config/keys/:service` | — | Verifica si existe una key |
 | `POST` | `/config/setup` | — | Configuración inicial del bridge |
-| `POST` | `/obsidian/*` | — | Proxy a Obsidian CLI |
 | `POST` | `/task` | ✓ | Inicia tarea larga (Claude Code) |
 | `GET` | `/stream/:taskId` | ✓ | SSE del progreso de una tarea |
 | `POST` | `/chat/run` | ✓ | Chat con LLM (streaming) |
@@ -22,14 +21,14 @@ El bridge corre en `http://localhost:3284`. Ver [Bridge API](/reference/bridge-a
 | `POST` | `/flow/run` | ✓ | Ejecuta un flow de automatización |
 | `GET` | `/flow/events/:runId` | ✓ | SSE del progreso de un flow |
 | `GET` | `/flow/:runId` | ✓ | Snapshot de un flow en ejecución |
-| `POST` | `/vault/save` | ✓ | Guarda en el vault de Obsidian |
-| `POST` | `/vault/write` | ✓ | Escribe un archivo en ruta específica |
-| `POST` | `/vault/delete` | ✓ | Elimina un archivo del vault |
-| `POST` | `/vault/setup` | ✓ | Crea estructura canónica del vault |
-| `GET` | `/vault/tree` | ✓ | Árbol de carpetas del vault |
-| `GET` | `/vault/file` | ✓ | Contenido de un archivo |
-| `GET` | `/vault/search` | ✓ | Búsqueda de texto en el vault |
-| `POST` | `/vault/extract-facts` | ✓ | Propone hechos nuevos desde el vault |
+| `POST` | `/local/write` | ✓ | Escribe un archivo en la carpeta local |
+| `POST` | `/local/delete` | ✓ | Elimina un archivo o carpeta local |
+| `POST` | `/local/setup` | ✓ | Crea estructura canónica de carpetas |
+| `GET` | `/local/tree` | ✓ | Árbol de carpetas desde la raíz |
+| `GET` | `/local/file` | ✓ | Contenido de un archivo |
+| `GET` | `/local/search` | ✓ | Búsqueda de texto en carpeta local |
+| `POST` | `/local/extract-facts` | ✓ | Propone hechos nuevos desde archivos locales |
+| `POST` | `/notes/sync` | ✓ | Sincroniza notas locales con Conduit AI |
 
 **Auth ✓**: requiere `Authorization: Bearer <BRIDGE_TOKEN>` en el header.
 
@@ -192,96 +191,81 @@ Snapshot del estado actual del run.
 
 ---
 
-## Vault (Obsidian)
+## Archivos locales
 
-### `POST /vault/save`
+Todos los endpoints `/local` operan sobre la carpeta configurada en `local_path` del workspace. No requiere Obsidian — funciona con cualquier carpeta en disco.
 
-```json
-// Body — modo manual
-{
-  "destination": "brain",   // "brain" | "vault"
-  "mode": "manual",         // "manual" | "draft" | "quick"
-  "content": "Hecho clave",
-  "vaultPath": "/ruta/al/vault"
-}
-
-// Response
-{ "ok": true, "path": "/ruta/al/vault/BRAIN/2026-07-28_10-00-00.md" }
-```
-
-En modo `draft`, el LLM genera el contenido pero no escribe archivo:
-```json
-{ "ok": true, "draft": "Contenido generado...", "suggestedPath": "..." }
-```
-
-En modo `quick`, el bridge usa Claude Code con su Write tool. Responde SSE stream.
-
-### `POST /vault/write`
+### `POST /local/write`
 
 ```json
 // Body
 {
   "relativePath": "CONTEXT/decisiones/auth.md",
   "content": "# Decisión\n...",
-  "vaultPath": "/ruta/al/vault"
+  "localPath": "/ruta/a/mis-notas"
 }
 // Response
-{ "ok": true, "path": "/ruta/absoluta/al/archivo" }
+{ "ok": true }
 ```
 
-### `GET /vault/tree`
+### `GET /local/tree`
+
+Devuelve el árbol completo desde la raíz (CONTEXT/ y MEMORY/ como nodos raíz).
 
 ```
-GET /vault/tree?vaultPath=/ruta&rootFolder=CONTEXT
+GET /local/tree?localPath=/ruta
 ```
 
 ```json
 {
   "tree": [
     {
-      "name": "sesiones",
+      "name": "CONTEXT",
       "type": "folder",
       "children": [
-        { "name": "sesion-2026-07-28.md", "type": "file", "path": "sesiones/sesion-2026-07-28.md" }
+        { "name": "sesiones", "type": "folder", "children": [
+          { "name": "sesion-2026-07-28.md", "type": "file", "path": "CONTEXT/sesiones/sesion-2026-07-28.md" }
+        ]}
       ]
-    }
+    },
+    { "name": "MEMORY", "type": "folder", "children": [] }
   ]
 }
 ```
 
-### `GET /vault/file`
+### `GET /local/file`
 
 ```
-GET /vault/file?path=CONTEXT/decisiones/auth.md&vaultPath=/ruta
+GET /local/file?path=CONTEXT/decisiones/auth.md&localPath=/ruta
 ```
 
 ```json
 { "ok": true, "content": "# Decisión...", "path": "CONTEXT/decisiones/auth.md" }
 ```
 
-### `GET /vault/search`
+### `GET /local/search`
 
 ```
-GET /vault/search?q=autenticación&rootFolder=CONTEXT&vaultPath=/ruta
+GET /local/search?q=autenticación&localPath=/ruta
 ```
 
 ```json
 {
   "ok": true,
   "results": [
-    { "path": "decisiones/auth.md", "preview": "...autenticación via NextAuth..." }
+    { "path": "CONTEXT/decisiones/auth.md", "preview": "...autenticación via NextAuth..." }
   ]
 }
 ```
 
-### `POST /vault/extract-facts`
+### `POST /local/extract-facts`
 
 ```json
 // Body
 {
   "relativePath": "CONTEXT/sesiones",
   "existingFacts": ["El proyecto usa TypeScript"],
-  "vaultPath": "/ruta"
+  "localPath": "/ruta"
 }
 
 // Response
@@ -292,21 +276,40 @@ GET /vault/search?q=autenticación&rootFolder=CONTEXT&vaultPath=/ruta
 }
 ```
 
-### `POST /vault/setup`
+### `POST /local/setup`
+
+Crea la estructura canónica de carpetas: `CONTEXT/`, `CONTEXT/sesiones/`, `CONTEXT/agentes/`, `MEMORY/`, `MEMORY/notes/`.
 
 ```json
 // Body
-{ "vaultPath": "/ruta", "agents": [{ "name": "Dev" }, { "name": "Alex" }] }
+{ "localPath": "/ruta" }
 
 // Response
 {
   "ok": true,
   "items": [
-    { "path": "BRAIN", "status": "created" },
-    { "path": "CONTEXT", "status": "existed" }
+    { "path": "CONTEXT", "status": "created" },
+    { "path": "MEMORY", "status": "existed" }
   ]
 }
 ```
+
+### `POST /local/delete`
+
+```json
+// Body — elimina archivo o carpeta (recursivo)
+{ "relativePath": "MEMORY/notes/viejo.md", "localPath": "/ruta" }
+// Response
+{ "ok": true }
+```
+
+---
+
+## Notas
+
+### `POST /notes/sync`
+
+Sincroniza notas desde la carpeta local al sistema de Conduit AI.
 
 ---
 

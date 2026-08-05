@@ -65,7 +65,31 @@ Dónde guarda el agente los archivos que produce:
 
 ### Skills asignados
 
-Los skills amplían las capacidades del agente. Se asignan desde el campo **Skills** al editar el agente. Ver [Skills](/concepts/skills) para más detalle.
+Los skills amplían las capacidades del agente. Para asignarlos, hacé clic en **+ Agregar** en la sección Skills del modal del agente. Se abre un picker con dos tabs:
+
+- **📁 Local** — skills de las fuentes locales configuradas en tu equipo
+- **☁️ Conduit** — skills guardados en la plataforma
+
+Podés buscar por nombre y filtrar por tags. Los skills seleccionados aparecen como chips en el modal.
+
+Ver [Skills](/concepts/skills) para más detalle.
+
+#### Modo de carga de skills (`skill_load_mode`)
+
+Controlá cuándo se inyecta el contenido de los skills en el contexto del agente:
+
+| Modo | Comportamiento |
+|------|---------------|
+| **Siempre** | El contenido completo de cada skill se incluye en cada mensaje (default) |
+| **Por contexto** | El contenido se inyecta solo si el mensaje del usuario menciona palabras clave del skill |
+
+El modo "Por contexto" es útil cuando tenés muchos skills asignados y querés evitar saturar el contexto del agente con información irrelevante para cada mensaje puntual.
+
+### Identidad del agente (Soul)
+
+Cada agente tiene una nota de identidad en `CONTEXT/agentes/{nombre}/soul/_prompt.md` que se inyecta como primer bloque del system prompt. Esta nota define la identidad del agente dentro de la plataforma Conduit AI — qué secciones conoce, qué puede hacer, cuáles son sus reglas de comportamiento.
+
+El soul se crea automáticamente cuando agregás un agente al workspace.
 
 ## Estados del agente
 

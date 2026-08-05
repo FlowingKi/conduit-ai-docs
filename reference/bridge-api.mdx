@@ -18,7 +18,6 @@ El token se configura en la primera ejecución del bridge y se almacena en Supab
 **Endpoints sin auth** (solo accesibles desde localhost):
 - `GET /health`
 - `POST /stop`
-- `POST /obsidian/*`
 - `PUT /config/keys`
 - `GET /config/keys/:service`
 - `POST /config/setup`
@@ -172,86 +171,69 @@ Ejecuta un tool via MCP (Model Context Protocol).
 
 ---
 
-## Vault (Obsidian)
+## Archivos locales
 
-Todos los endpoints `/vault` requieren auth y operan sobre el vault de Obsidian configurado.
+Todos los endpoints `/local` requieren auth y operan sobre la carpeta local configurada en el workspace (`local_path`). Funciona con cualquier carpeta en disco — no requiere Obsidian.
 
-### `POST /vault/save`
+### `POST /local/write`
 
-Guarda contenido en el vault. Tres modos:
-
-| Modo | Descripción |
-|------|-------------|
-| `manual` | Escribe `content` directamente a un archivo |
-| `draft` | Usa el LLM para generar contenido, devuelve el borrador sin escribir |
-| `quick` | Usa Claude para escribir el archivo directamente via su Write tool |
-
-**Body (modo manual):**
-```json
-{
-  "destination": "brain",
-  "mode": "manual",
-  "content": "Hecho importante sobre el proyecto",
-  "vaultPath": "/Users/juan/vault"
-}
-```
-
-**Destinos disponibles:**
-- `brain` → guarda en `BRAIN/YYYY-MM-DD_HH-MM-SS.md`
-- `vault` → guarda en `CONTEXT/sesiones/sesion-YYYY-MM-DD_HH-MM-SS.md`
-
-### `POST /vault/write`
-
-Escribe un archivo en una ruta específica del vault.
+Escribe un archivo en una ruta específica de la carpeta local.
 
 **Body:**
 ```json
 {
   "relativePath": "CONTEXT/decisiones/auth.md",
   "content": "# Decisión de auth\n...",
-  "vaultPath": "/Users/juan/vault"
+  "localPath": "/Users/juan/mis-notas"
 }
 ```
 
-### `GET /vault/tree`
+**Response:** `{ "ok": true }`
 
-Árbol de carpetas del vault (solo archivos `.md`).
+### `GET /local/tree`
 
-**Query:** `?vaultPath=...&rootFolder=CONTEXT`
+Árbol de carpetas completo desde la raíz (solo archivos `.md`). Devuelve `CONTEXT/` y `MEMORY/` como nodos raíz.
+
+**Query:** `?localPath=...`
 
 **Response:**
 ```json
 {
   "tree": [
-    { "name": "sesiones", "type": "folder", "children": [
-      { "name": "sesion-2026-07-28.md", "type": "file", "path": "sesiones/sesion-2026-07-28.md" }
-    ]}
+    { "name": "CONTEXT", "type": "folder", "children": [
+      { "name": "sesiones", "type": "folder", "children": [
+        { "name": "sesion-2026-07-28.md", "type": "file", "path": "CONTEXT/sesiones/sesion-2026-07-28.md" }
+      ]}
+    ]},
+    { "name": "MEMORY", "type": "folder", "children": [] }
   ]
 }
 ```
 
-### `GET /vault/file`
+### `GET /local/file`
 
 Contenido de un archivo específico.
 
-**Query:** `?path=CONTEXT/decisiones/auth.md&vaultPath=...`
+**Query:** `?path=CONTEXT/decisiones/auth.md&localPath=...`
 
-### `GET /vault/search`
+**Response:** `{ "ok": true, "content": "# Decisión...", "path": "CONTEXT/decisiones/auth.md" }`
 
-Búsqueda de texto en el vault.
+### `GET /local/search`
 
-**Query:** `?q=autenticación&rootFolder=CONTEXT&vaultPath=...`
+Búsqueda de texto en la carpeta local.
 
-### `POST /vault/extract-facts`
+**Query:** `?q=autenticación&localPath=...`
 
-Compara el contenido del vault con los hechos existentes en Brain y propone solo los nuevos.
+### `POST /local/extract-facts`
+
+Compara el contenido de la carpeta local con los hechos existentes en Memory y propone solo los nuevos.
 
 **Body:**
 ```json
 {
   "relativePath": "CONTEXT/sesiones",
   "existingFacts": ["El proyecto usa TypeScript", "..."],
-  "vaultPath": "/Users/juan/vault"
+  "localPath": "/Users/juan/mis-notas"
 }
 ```
 
@@ -264,13 +246,25 @@ Compara el contenido del vault con los hechos existentes en Brain y propone solo
 }
 ```
 
-### `POST /vault/setup`
+### `POST /local/setup`
 
-Crea la estructura canónica de carpetas del vault (BRAIN, CONTEXT/sesiones, CONTEXT/memoria, etc.).
+Crea la estructura canónica de carpetas (`CONTEXT/`, `CONTEXT/sesiones/`, `CONTEXT/agentes/`, `MEMORY/`, `MEMORY/notes/`).
 
-### `POST /vault/delete`
+**Body:** `{ "localPath": "/Users/juan/mis-notas" }`
 
-Elimina un archivo del vault.
+### `POST /local/delete`
+
+Elimina un archivo o carpeta de la carpeta local.
+
+**Body:** `{ "relativePath": "MEMORY/notes/viejo.md", "localPath": "/Users/juan/mis-notas" }`
+
+---
+
+## Notas
+
+### `POST /notes/sync`
+
+Sincroniza notas desde la carpeta local al sistema de notas de Conduit AI.
 
 ---
 

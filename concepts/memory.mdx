@@ -1,6 +1,6 @@
 ---
 title: Memory
-description: Sistema de memoria persistente de Conduit AI — hechos, notas, sync con Obsidian y export.
+description: Sistema de memoria persistente de Conduit AI — hechos, notas, carpeta local y export.
 ---
 
 Memory es el sistema de memoria persistente de Conduit AI. Los agentes pueden leer y escribir hechos, notas y contexto que persiste entre sesiones.
@@ -20,7 +20,7 @@ Ejemplos de hechos:
 
 ### Notas
 
-Las notas son documentos más largos creados por los agentes o el usuario. Se guardan en `MEMORY/notes/` dentro del vault de Obsidian (si está configurado) o en cloud.
+Las notas son documentos más largos creados por los agentes o el usuario. Se guardan en `MEMORY/notes/` (storage local) o en cloud.
 
 **Destilar sesión → nota**: en la pestaña Memory de un workspace, podés solicitar que el agente destile la sesión actual en una nota de resumen. La nota queda en `MEMORY/notes/`.
 
@@ -34,22 +34,34 @@ Desde **Memory** en el menú lateral o desde la pestaña **Memory** de un worksp
 
 | Opción | Descripción |
 |--------|-------------|
-| **Storage** | `cloud` (Supabase) o `local` (vault Obsidian) |
+| **Storage** | Dónde se guardan los datos — ver opciones abajo |
 | **Límite de hechos** | Cuántos hechos se retienen (5, 10, 20, 50) |
 | **Retención** | Por cuánto tiempo se conservan los hechos (30d, 90d, 1 año) |
 
-## Sync con Obsidian
+### Opciones de storage
 
-Si tenés Obsidian con el vault de Conduit AI configurado, los hechos y notas pueden sincronizarse bidireccional. Las notas creadas vía "Destilar sesión" aparecen en `MEMORY/notes/` en Obsidian.
+| Opción | Descripción |
+|--------|-------------|
+| **Cloud Conduit** | Supabase — accesible desde cualquier dispositivo, sin configuración extra |
+| **Local .md** | Archivos Markdown en una carpeta local de tu máquina, vía el bridge |
+| **Local .json** | Igual que `.md` pero en formato JSON |
+| **Local SQLite** | Base de datos SQLite local |
 
-Para configurar el sync:
-1. El bridge tiene que estar corriendo y con acceso a tu vault
-2. Configurá la ruta del vault en **Settings → Bridge**
-3. Seleccioná `local` como storage en Memory
+Para usar storage local, el bridge tiene que estar corriendo y tenés que configurar la ruta de la carpeta en **Settings** del workspace (campo **Carpeta local**). Funciona con cualquier carpeta en disco, incluyendo un vault de Obsidian.
+
+### Cambiar de storage — wizard de migración
+
+Al cambiar de storage aparece un wizard que te guía paso a paso para configurar la nueva ubicación y opcionalmente migrar los datos existentes.
+
+## Sync con carpeta local
+
+Si configuraste storage local, las notas creadas vía "Destilar sesión" aparecen en `MEMORY/notes/` dentro de tu carpeta. Podés leerlas y editarlas directamente — los cambios los lee el agente la próxima vez que los consulte.
+
+La pestaña Memory del workspace muestra el árbol de archivos con `CONTEXT/` y `MEMORY/` como nodos raíz. Podés navegar, crear y eliminar archivos y carpetas desde ahí.
 
 ## Export de memoria
 
-Desde la pestaña Memory de un workspace, podés exportar todos los hechos del workspace a un archivo markdown. El archivo se guarda con el nombre `BRAIN/memoria-FECHA.md`.
+Desde la pestaña Memory de un workspace, podés exportar todos los hechos del workspace a un archivo markdown. El archivo se guarda con el nombre `MEMORY/memoria-FECHA.md`.
 
 Útil para:
 - Backup antes de limpiar hechos

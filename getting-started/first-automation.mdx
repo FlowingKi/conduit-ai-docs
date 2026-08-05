@@ -3,7 +3,7 @@ title: Tu primera automatización
 description: Creá un flow que se ejecuta solo, sin intervención manual.
 ---
 
-Las automatizaciones son flows que se disparan solos ante un evento — un webhook entrante, un horario programado, o un evento de un servicio externo. Se construyen visualmente con un canvas de nodos.
+Las automatizaciones son flows que se disparan solos ante un evento — un webhook entrante, un horario programado, o un evento de un servicio externo. Se construyen visualmente con el editor de workflow.
 
 ## Crear la automatización
 
@@ -22,9 +22,9 @@ Las automatizaciones son flows que se disparan solos ante un evento — un webho
     "Cuando recibo un webhook, pedile a un agente que resuma el contenido y guárdalo en Memory"
     ```
 
-    **Constructor manual (Lineal o Canvas)** — armá el flow nodo a nodo:
+    **Constructor manual (Lineal o Workflow)** — armá el flow nodo a nodo:
     - Vista **Lineal** — lista paso a paso, más simple
-    - Vista **Canvas** — arrastrable con React Flow, más visual
+    - Vista **Workflow** — arrastrable con React Flow, más visual
   </Step>
   <Step title="Configurá el trigger">
     El primer nodo siempre es el **Trigger**. Elegí el tipo:
@@ -65,7 +65,7 @@ Las automatizaciones son flows que se disparan solos ante un evento — un webho
     - **set_variables** — define variables reutilizables en el flow
     - **data_transformer** — transforma la estructura de los datos
     - **output** — el resultado final del flow
-    - **note** — comentario visual en el canvas (no ejecuta)
+    - **note** — comentario visual en el workflow (no ejecuta)
   </Accordion>
 </AccordionGroup>
 

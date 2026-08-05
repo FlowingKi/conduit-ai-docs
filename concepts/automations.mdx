@@ -1,15 +1,15 @@
 ---
 title: Automations
-description: Canvas visual para crear flows automáticos con nodos de agente, condición, loop, tool y más.
+description: Editor de workflow visual para crear flows automáticos con nodos de agente, condición, loop, tool y más.
 ---
 
-Las automatizaciones son flows que se ejecutan automáticamente en respuesta a un trigger — un webhook entrante, un schedule, o un evento manual. Se diseñan en el canvas visual del workspace.
+Las automatizaciones son flows que se ejecutan automáticamente en respuesta a un trigger — un webhook entrante, un schedule, o un evento manual. Se diseñan en el editor de workflow del workspace.
 
-## Canvas visual
+## Workflow visual
 
-El canvas es un editor de nodos y conexiones estilo flow. Cada nodo representa un paso del flow; las conexiones definen el orden de ejecución.
+El workflow es un editor de nodos y conexiones estilo flow. Cada nodo representa un paso del flow; las conexiones definen el orden de ejecución.
 
-Para acceder al canvas, abrí un workspace y hacé clic en la pestaña **Canvas**.
+Para acceder al workflow, abrí un workspace y hacé clic en la pestaña **Workflow**.
 
 ## Nodos disponibles
 
@@ -25,7 +25,7 @@ Para acceder al canvas, abrí un workspace y hacé clic en la pestaña **Canvas*
 | **Output** | 📤 | Guarda o envía el resultado del flow |
 | **Tool** | 🔧 | Ejecuta una tool de Composio (GitHub, Slack, etc.) sin pasar por un agente |
 | **Subflow** | 📦 | Ejecuta otro flow anidado |
-| **Note** | 💬 | Anotación en el canvas — no afecta la ejecución |
+| **Note** | 💬 | Anotación en el workflow — no afecta la ejecución |
 
 ### Nodos de datos
 
@@ -48,6 +48,16 @@ Para acceder al canvas, abrí un workspace y hacé clic en la pestaña **Canvas*
 | **Error Handler** | 🛡 | Captura errores y define comportamiento de fallback |
 | **Webhook Response** | 📬 | Responde al webhook entrante con un payload |
 
+## Toolbar de nodos
+
+Cada nodo tiene una toolbar flotante con tres acciones:
+
+| Botón | Acción |
+|-------|--------|
+| ✏ **Editar** | Abre el panel de configuración del nodo |
+| **+** **Agregar** | Activa el modo link — el próximo clic crea un nodo ya conectado |
+| 💬 **Chat** | Solo en nodos `agent` — abre el chat de nodo para conversar con ese agente en el contexto del flow |
+
 ## Triggers
 
 El nodo **Trigger** define cuándo arranca el flow. Ver [Tipos de trigger](/reference/trigger-types) para el detalle de cada tipo.
@@ -66,14 +76,16 @@ Ver [Variables](/reference/variables) para la referencia completa.
 
 ## AI Builder y Linear Builder
 
-El canvas tiene dos modos de construcción:
+El workflow tiene dos modos de construcción:
 
-**Canvas libre** — modo por defecto. Arrastrás nodos, los conectás, y los configurás manualmente.
+**Workflow libre** — modo por defecto. Arrastrás nodos, los conectás, y los configurás manualmente.
 
 **Linear Builder** — modo guiado. Describís el flow en lenguaje natural y el sistema genera los nodos automáticamente. Útil para flows lineales simples.
 
-## Guardar y activar
+## Probar y activar
 
-El canvas se guarda automáticamente. Para activar un flow:
+Antes de activar un flow, podés usar el botón **Probar flow** para ejecutarlo manualmente y verificar que cada nodo funcione correctamente. El tab **Monitor** muestra el avance en tiempo real nodo a nodo.
+
+Para activar un flow de forma permanente:
 1. Asegurate de que el nodo Trigger esté correctamente configurado
-2. El flow queda activo y espera el trigger correspondiente
+2. Activá el toggle — el flow queda escuchando el trigger correspondiente

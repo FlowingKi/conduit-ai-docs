@@ -27,6 +27,44 @@ mi-paquete/
 └── testing.md        # Skill de testing
 ```
 
+## Fuentes de skills
+
+### Conduit Skills
+
+Skills guardados en la plataforma Conduit AI. Los creás desde la pantalla **Skills** y están disponibles para todos los agentes del equipo.
+
+### Fuentes locales
+
+Podés apuntar a carpetas en tu máquina (vía el bridge) como fuentes de skills locales. El bridge escanea esas carpetas en dos niveles:
+
+- **Carpeta con `SKILL.md`** → se registra como skill individual
+- **Carpeta sin `SKILL.md`** con subcarpetas que sí tienen `SKILL.md` → se registra como paquete colapsable
+
+Para agregar una fuente local:
+1. Abrí **Skills** en el menú lateral
+2. En el sidebar izquierdo, sección **Fuentes locales**, hacé clic en **+**
+3. Ingresá la ruta absoluta a la carpeta
+4. Los skills aparecen agrupados por paquete, con dividers alfabéticos
+
+## Tags
+
+Los skills tienen un sistema de tags con 57 etiquetas organizadas en 6 dimensiones:
+
+| Dimensión | Ejemplos |
+|-----------|---------|
+| Dominio | `security`, `architecture`, `testing`, `design` |
+| Scope | `file`, `project`, `team` |
+| Modo | `review`, `generate`, `analyze` |
+| Output | `code`, `document`, `analysis` |
+| Momento | `before-coding`, `while-coding`, `after-coding` |
+| Categoría | `ai-agents`, `devops`, `research` |
+
+Los skills sin tags muestran un punto naranja `●`. Podés filtrar por tags usando los chips en la parte superior de la lista.
+
+### Auto-etiquetado
+
+Hacé clic derecho sobre cualquier skill local → **Auto-etiquetar**. El bridge lee el contenido del skill y usa el LLM para asignar los tags correspondientes automáticamente. El punto naranja desaparece cuando el skill tiene tags.
+
 ## Crear un skill
 
 ### Con asistente de IA
@@ -45,6 +83,7 @@ Cada skill es un archivo Markdown con frontmatter:
 name: mi-skill
 type: skill
 description: Descripción de lo que hace este skill
+tags: [architecture, review, after-coding]
 ---
 
 Contenido del skill en Markdown...
@@ -54,7 +93,14 @@ Ver [Formato de skill](/reference/skill-format) para la referencia completa del 
 
 ## Asignar skills a agentes
 
-En la pantalla de edición de un agente, el campo **Skills** muestra la lista de skills disponibles. Seleccioná los que querés asignar. Los skills asignados se incluyen como contexto adicional cada vez que el agente recibe un mensaje.
+En el modal del agente, la sección **Skills** tiene un botón **+ Agregar** que abre un picker con:
+
+- **Tab 📁 Local** — skills de las fuentes locales configuradas
+- **Tab ☁️ Conduit** — skills guardados en la plataforma
+
+Podés buscar por nombre y filtrar por tags. Los skills seleccionados aparecen como chips.
+
+Ver [Modo de carga de skills](/concepts/agents#modo-de-carga-de-skills-skill_load_mode) en la doc de Agentes para controlar cuándo se inyecta el contenido de cada skill.
 
 ## Importar desde GitHub
 

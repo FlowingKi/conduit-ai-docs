@@ -1,9 +1,9 @@
 ---
 title: Workspaces
-description: Espacios de trabajo donde chatear con agentes, armar automatizaciones en el canvas y gestionar la memoria del equipo.
+description: Espacios de trabajo donde chatear con agentes, armar automatizaciones en el workflow visual y gestionar la memoria del equipo.
 ---
 
-Un workspace es un espacio de trabajo compartido donde podés chatear con uno o más agentes, armar automatizaciones en el canvas visual, y acceder a la memoria del equipo.
+Un workspace es un espacio de trabajo compartido donde podés chatear con uno o más agentes, armar automatizaciones en el workflow visual, y acceder a la memoria del equipo.
 
 ## Crear un workspace
 
@@ -13,7 +13,7 @@ Un workspace es un espacio de trabajo compartido donde podés chatear con uno o 
 
 ## Pestañas del workspace
 
-Cada workspace tiene cuatro vistas:
+Cada workspace tiene cinco vistas:
 
 ### Chat
 
@@ -34,9 +34,17 @@ Cada agente responde de forma independiente. Podés tener conversaciones simult�
 
 Los agentes también pueden mencionarse entre sí en sus respuestas para pasar tareas. Esto permite flujos de trabajo encadenados sin que el usuario tenga que intervenir.
 
-### Canvas
+### Workflow
 
-Editor visual de automatizaciones. Acá armás los flows que se ejecutan automáticamente via triggers. Ver [Automations](/concepts/automations) para el detalle de los nodos.
+Editor visual de automatizaciones. Acá armás los flows que se ejecutan automáticamente via triggers.
+
+Cada nodo agente tiene su propio **chat de nodo** — hacé clic en el ícono 💬 de la toolbar del nodo para abrir el drawer de chat y conversar directamente con ese agente en el contexto del workflow.
+
+Ver [Automations](/concepts/automations) para el detalle de los nodos y tipos disponibles.
+
+### Monitor
+
+Vista en tiempo real del estado de los flows en ejecución. Muestra el avance nodo por nodo via SSE, con logs de output y estado de cada paso.
 
 ### Memory
 
@@ -47,6 +55,7 @@ Vista de la memoria del workspace — hechos, notas y contexto acumulado. Ver [M
 Configuración del workspace:
 - **Nombre y descripción**
 - **Agentes participantes** — agregá o quitá agentes
+- **Carpeta local** — ruta a la carpeta local para storage local de memoria
 - **Reglas del workspace** — instrucciones en texto libre que aplican a todos los agentes de este espacio
 
 ## Reglas del workspace
